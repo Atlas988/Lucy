@@ -1360,7 +1360,12 @@ class Lucy:
                 content = assistant_message.get("content")
                 if not isinstance(content, str) or not content.strip():
                     raise RuntimeError("The configured chat API returned an empty response.")
-                return content.strip()
+                answer = self._strip_reasoning_blocks(content)
+                if not answer:
+                    raise RuntimeError(
+                        "The chat model returned no answer after its reasoning text was removed."
+                    )
+                return answer
 
             if round_index >= MAX_TOOL_ROUNDS:
                 raise RuntimeError(
@@ -1412,6 +1417,16 @@ class Lucy:
                     {"role": "tool", "tool_call_id": call_id, "content": str(result)[:6000]}
                 )
         raise RuntimeError("The chat model ended without a final answer.")
+
+    @staticmethod
+    def _strip_reasoning_blocks(content):
+        answer = re.sub(
+            r"<think\b[^>]*>.*?(?:</think\s*>|$)",
+            "",
+            content,
+            flags=re.IGNORECASE | re.DOTALL,
+        )
+        return re.sub(r"</?think\s*>", "", answer, flags=re.IGNORECASE).strip()
 
     @staticmethod
     def _user_requested_memory(question):
@@ -1847,7 +1862,12 @@ class Lucy:
                 raise RuntimeError(f"llama.cpp response generation failed: {error}") from error
             if not isinstance(content, str) or not content.strip():
                 raise RuntimeError("The llama.cpp model returned an empty response.")
-            return content.strip()
+            answer = self._strip_reasoning_blocks(content)
+            if not answer:
+                raise RuntimeError(
+                    "The llama.cpp model returned no answer after its reasoning text was removed."
+                )
+            return answer
 
         prompt_parts.append(f"User: {user_prompt}\nLucy:")
         try:

@@ -113,6 +113,8 @@ error instead of silently changing backends.
    local references for relevant context.
 3. If a local chat-capable model is loaded, Lucy sends a prompt and recent
    conversation context to llama.cpp's in-process chat-completion API.
+   Qwen-style `<think>` reasoning blocks are removed before the answer is
+   displayed.
 4. Lucy displays the generated answer and records the conversation in its
    local memory file.
 

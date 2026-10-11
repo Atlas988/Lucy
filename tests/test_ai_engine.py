@@ -566,6 +566,23 @@ class LucyTests(unittest.TestCase):
                 knowledge_path=self.knowledge_path,
             )
 
+    def test_llama_cpp_response_hides_qwen_think_block(self):
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+        )
+        with patch.object(
+            lucy,
+            "_chat_request",
+            return_value={
+                "content": "<think>private reasoning</think>The concise answer.",
+                "tool_calls": [],
+            },
+        ):
+            answer = lucy._api_response("question", [])
+
+        self.assertEqual("The concise answer.", answer)
+
     def test_api_timeout_environment_setting_is_applied(self):
         environment = {
             "LUCY_MEMORY_PATH": str(self.memory_path),
