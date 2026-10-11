@@ -94,12 +94,29 @@ class LucyTests(unittest.TestCase):
     def test_optional_voice_output_uses_platform_speech_engine(self):
         engine = Mock()
         speech_module = Mock(init=Mock(return_value=engine))
-        with patch.dict(sys.modules, {"pyttsx3": speech_module}):
+        with patch("core.audio.platform.system", return_value="Linux"), patch.dict(
+            sys.modules, {"pyttsx3": speech_module}
+        ):
             voice = VoiceOutput()
             voice.speak("Hello")
         engine.setProperty.assert_called_once_with("rate", 175)
         engine.say.assert_called_once_with("Hello")
         engine.runAndWait.assert_called_once_with()
+
+    def test_macos_voice_uses_native_say_command(self):
+        with patch("core.audio.platform.system", return_value="Darwin"), patch(
+            "core.audio.shutil.which", return_value="/usr/bin/say"
+        ), patch("core.audio.subprocess.run") as run, patch.dict(
+            sys.modules, {"pyttsx3": None}
+        ):
+            voice = VoiceOutput()
+            voice.speak("Hello from Lucy")
+        run.assert_called_once_with(
+            ["/usr/bin/say", "Hello from Lucy"],
+            check=True,
+            capture_output=True,
+            text=True,
+        )
 
     def test_configured_missing_model_is_reported(self):
         with self.assertRaises(FileNotFoundError):
