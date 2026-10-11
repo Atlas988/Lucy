@@ -4,14 +4,23 @@ import csv
 import os
 from pathlib import Path
 from statistics import mean
-from gpt4all import GPT4All
+
+try:
+    from gpt4all import GPT4All
+except Exception:  # pragma: no cover - optional dependency
+    GPT4All = None
 
 class ReasoningEngine:
     def __init__(self, memory_file="scenario_memory.json", ethics_dir="ethics", model_path="models/mistral-7b-instruct-v0.1.Q4_0.gguf"):
         self.memory_file = memory_file
         self.knowledge = []
         self.model_path = Path(model_path)
-        self.model = self.load_model(self.model_path)
+        self.model = None
+        if GPT4All is not None:
+            try:
+                self.model = self.load_model(self.model_path)
+            except (FileNotFoundError, Exception):
+                self.model = None
         self.load()
         if ethics_dir:
             self.load_ethics_dataset(ethics_dir)
@@ -63,6 +72,9 @@ class ReasoningEngine:
         print("\n--- Reasoning Prompt ---")
         print(prompt)
         print("------------------------\n")
+
+        if self.model is None:
+            return "Local reasoning model is unavailable. Based on the available knowledge, the best answer is to reason carefully from the relevant context and avoid assumptions."
 
         response = self.model.generate(prompt, max_tokens=300)
         return response.strip()

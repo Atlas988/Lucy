@@ -1,12 +1,28 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+try:
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    import torch
+except Exception:  # pragma: no cover - optional dependency
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
+    torch = None
 
 # Load tokenizer and model (once)
-tokenizer = AutoTokenizer.from_pretrained("gpt2")
-model = AutoModelForCausalLM.from_pretrained("gpt2")
-model.eval()  # inference mode
+tokenizer = None
+model = None
+if AutoTokenizer is not None and AutoModelForCausalLM is not None:
+    try:
+        tokenizer = AutoTokenizer.from_pretrained("gpt2")
+        model = AutoModelForCausalLM.from_pretrained("gpt2")
+        model.eval()  # inference mode
+    except Exception:  # pragma: no cover - model may not be available
+        tokenizer = None
+        model = None
+
 
 def generate_response(prompt, max_new_tokens=100, temperature=0.7):
+    if tokenizer is None or model is None:
+        return f"[offline fallback] {prompt.strip() or 'How can I help?'}"
+
     # Encode input prompt
     inputs = tokenizer(prompt, return_tensors="pt")
 

@@ -4,13 +4,41 @@ import uuid
 import csv
 import os
 import time
-import pygame
-import edge_tts
 import json
+import subprocess
+import sys
 from pathlib import Path
 import difflib
 from statistics import mean
-from gpt4all import GPT4All
+
+
+def _safe_optional_import(module_name, symbol_name=None):
+    try:
+        completed = subprocess.run(
+            [sys.executable, "-c", f"import {module_name}"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False,
+        )
+    except Exception:
+        return None
+
+    if completed.returncode != 0:
+        return None
+
+    try:
+        module = __import__(module_name, fromlist=[symbol_name] if symbol_name else [])
+    except Exception:
+        return None
+    if symbol_name:
+        return getattr(module, symbol_name, None)
+    return module
+
+
+pygame = _safe_optional_import("pygame")
+edge_tts = _safe_optional_import("edge_tts")
+GPT4All = _safe_optional_import("gpt4all", "GPT4All")
 
 # --- Reasoning Engine ---
 class ReasoningEngine:
@@ -20,7 +48,12 @@ class ReasoningEngine:
         self.load()
         if ethics_dir:
             self.load_ethics_dataset(ethics_dir)
-        self.model = GPT4All(model_name="qwen2-1_5b-instruct-q4_0.gguf", model_path="E:/lucy_ai/models")
+        self.model = None
+        if GPT4All is not None:
+            try:
+                self.model = GPT4All(model_name="qwen2-1_5b-instruct-q4_0.gguf", model_path="E:/lucy_ai/models")
+            except Exception:
+                self.model = None
 
     def load(self):
         if Path(self.memory_file).exists():
@@ -148,7 +181,11 @@ Explain step-by-step why this ethical decision is justified, referencing ethical
 """
 
         try:
-            generated = self.model.generate(prompt, n_predict=256, temperature=0.7)
+            if self.model is None:
+                generated = "Local model not available. Returning a best-effort ethical rationale without the model." \
+                    "\n\nA responsible decision should weigh the harm caused, rights involved, and the specific circumstances."
+            else:
+                generated = self.model.generate(prompt, n_predict=256, temperature=0.7)
         except Exception as e:
             generated = f"Error generating explanation: {e}"
 
@@ -163,16 +200,21 @@ Explain step-by-step why this ethical decision is justified, referencing ethical
 
 
 # --- Audio Setup ---
-os.environ["SDL_AUDIODRIVER"] = "directsound"
-pygame.mixer.init()
+if pygame is not None:
+    os.environ.setdefault("SDL_AUDIODRIVER", "directsound")
+
 audio_lock = threading.Lock()
 
 # --- TTS ---
 async def generate_speech(text, filename):
+    if edge_tts is None:
+        raise RuntimeError("edge_tts is not installed")
     communicator = edge_tts.Communicate(text, voice="en-US-MichelleNeural")
     await communicator.save(filename)
 
 def play_audio_blocking(filename):
+    if pygame is None:
+        return
     try:
         pygame.mixer.music.load(filename)
         pygame.mixer.music.play()
@@ -186,11 +228,16 @@ def play_audio_blocking(filename):
         print(f"Audio playback error: {e}")
 
 def play_audio_nonblocking(text):
+    if pygame is None or edge_tts is None:
+        return
     filename = f"tts_{uuid.uuid4().hex}.mp3"
     def _play():
-        asyncio.run(generate_speech(text, filename))
-        with audio_lock:
-            play_audio_blocking(filename)
+        try:
+            asyncio.run(generate_speech(text, filename))
+            with audio_lock:
+                play_audio_blocking(filename)
+        except Exception as e:
+            print(f"Audio generation error: {e}")
         try:
             os.remove(filename)
         except Exception:
