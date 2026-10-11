@@ -3,6 +3,7 @@ import os
 import subprocess
 import sys
 import tempfile
+import urllib.error
 import unittest
 from pathlib import Path
 from unittest.mock import Mock, patch
@@ -43,6 +44,48 @@ class LucyTests(unittest.TestCase):
         self.assertIn("Hello", self.lucy.respond("hello"))
         self.assertIn("/remember", self.lucy.respond("/help"))
         self.assertIn("knowledge-only mode", self.lucy.respond("/status"))
+
+    def test_environment_auto_detects_installed_ollama_qwen3(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.read.return_value = json.dumps(
+            {"models": [{"name": "qwen3:0.6b"}, {"name": "qwen3:1.7b"}]}
+        ).encode("utf-8")
+        environment = {
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+            "LUCY_MODEL_PATH": "",
+            "LUCY_API_BASE_URL": "",
+            "LUCY_API_KEY": "",
+            "LUCY_API_MODEL": "",
+        }
+
+        with patch.dict(os.environ, environment), patch(
+            "core.ai_engine.urllib.request.urlopen", return_value=response
+        ) as urlopen:
+            lucy = Lucy.from_environment()
+
+        self.assertEqual("http://localhost:11434/v1", lucy.api_base_url)
+        self.assertEqual("qwen3:0.6b", lucy.api_model)
+        self.assertEqual(1, urlopen.call_count)
+
+    def test_environment_keeps_knowledge_only_when_ollama_is_unavailable(self):
+        environment = {
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+            "LUCY_MODEL_PATH": "",
+            "LUCY_API_BASE_URL": "",
+            "LUCY_API_KEY": "",
+            "LUCY_API_MODEL": "",
+        }
+
+        with patch.dict(os.environ, environment), patch(
+            "core.ai_engine.urllib.request.urlopen",
+            side_effect=urllib.error.URLError("Ollama is offline"),
+        ):
+            lucy = Lucy.from_environment()
+
+        self.assertFalse(lucy.api_base_url)
+        self.assertIsNone(lucy.model)
 
     def test_remembered_facts_persist_between_instances(self):
         self.assertEqual("I'll remember that.", self.lucy.respond("/remember I like tea"))

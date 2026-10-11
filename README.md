@@ -36,6 +36,8 @@ LUCY_VOICE=1 python main.py
 Lucy runs in knowledge-only mode without extra packages or a model. In that
 mode, it answers simple built-in questions and questions covered by the local
 knowledge base; it does not pretend to generate answers to other questions.
+When started without model settings, Lucy detects a running local Ollama server
+if it has Qwen3 0.6B or Qwen3 1.7B installed.
 
 ## Generated conversations with Ollama
 
@@ -57,8 +59,9 @@ For faster replies, Lucy disables Qwen3's separate reasoning output when using
 Ollama on this Mac. To use the larger model, change both `qwen3:0.6b` values
 above to `qwen3:1.7b` (download it first with `ollama pull qwen3:1.7b`).
 
-Ollama must be running while Lucy is in use. In this mode, conversation requests
-stay on the local machine. The model can choose from Lucy's restricted tools:
+Ollama must be running while Lucy is in use. With the auto-detected model,
+conversation requests stay on the local machine. The model can choose from
+Lucy's restricted tools:
 calculator, local knowledge search, Wikipedia summaries, and saved-memory
 recall. It cannot execute shell commands or arbitrary code. Lucy only saves a
 new fact when you explicitly ask it to remember or save it. `/clear` clears

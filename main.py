@@ -44,7 +44,8 @@ def main():
         print(
             "Lucy is running in knowledge-only mode. Configure GPT4All with "
             "LUCY_MODEL_PATH or an OpenAI-compatible model with LUCY_API_BASE_URL "
-            "for generated conversations."
+            "for generated conversations. A running Ollama installation with "
+            "Qwen3 0.6B or 1.7B is detected automatically."
         )
 
     greeting = "Hello! Type /help to see what I can do, or /quit to exit."

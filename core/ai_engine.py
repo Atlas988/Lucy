@@ -353,18 +353,46 @@ class Lucy:
 
     @classmethod
     def from_environment(cls, approval_callback=None):
+        model_path = os.environ.get("LUCY_MODEL_PATH") or None
+        api_base_url = os.environ.get("LUCY_API_BASE_URL") or None
+        api_key = os.environ.get("LUCY_API_KEY") or None
+        api_model = os.environ.get("LUCY_API_MODEL") or None
+        if not any((model_path, api_base_url, api_key, api_model)):
+            api_model = cls._installed_ollama_model()
+            if api_model:
+                api_base_url = "http://localhost:11434/v1"
         return cls(
-            model_path=os.environ.get("LUCY_MODEL_PATH") or None,
+            model_path=model_path,
             memory_path=os.environ.get("LUCY_MEMORY_PATH") or None,
             knowledge_path=os.environ.get("LUCY_KNOWLEDGE_PATH") or None,
-            api_base_url=os.environ.get("LUCY_API_BASE_URL") or None,
-            api_key=os.environ.get("LUCY_API_KEY") or None,
-            api_model=os.environ.get("LUCY_API_MODEL") or None,
+            api_base_url=api_base_url,
+            api_key=api_key,
+            api_model=api_model,
             learn_directory=os.environ.get("LUCY_LEARN_DIR") or None,
             learned_path=os.environ.get("LUCY_LEARNED_PATH") or None,
             code_directory=os.environ.get("LUCY_CODE_DIR") or None,
             approval_callback=approval_callback,
         )
+
+    @staticmethod
+    def _installed_ollama_model():
+        request = urllib.request.Request("http://localhost:11434/api/tags")
+        try:
+            with urllib.request.urlopen(request, timeout=1) as response:
+                result = json.loads(response.read().decode("utf-8"))
+        except (urllib.error.URLError, TimeoutError):
+            return None
+        if not isinstance(result, dict) or not isinstance(result.get("models"), list):
+            raise RuntimeError("Ollama returned an invalid installed-model list.")
+        installed_models = {
+            model.get("name")
+            for model in result["models"]
+            if isinstance(model, dict) and isinstance(model.get("name"), str)
+        }
+        for model in ("qwen3:0.6b", "qwen3:1.7b"):
+            if model in installed_models:
+                return model
+        return None
 
     def _load_model(self, configured_path):
         path = Path(configured_path).expanduser()
@@ -1338,7 +1366,9 @@ class Lucy:
             )
         return (
             "I don't have a local model or a matching reference for that yet. "
-            "Set LUCY_MODEL_PATH to a GPT4All .gguf model, use /search <topic> "
+            "Run Ollama with a supported Qwen3 model, set LUCY_API_BASE_URL and "
+            "LUCY_API_MODEL, or set LUCY_MODEL_PATH to a GPT4All .gguf model. "
+            "You can also use /search <topic> "
             "for Wikipedia, or ask /help for available commands."
         )
 
