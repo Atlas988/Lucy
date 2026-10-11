@@ -42,30 +42,40 @@ Lucy can run a GGUF chat model directly on the computer through GPT4All or
 llama.cpp; an Ollama server is optional. Lucy's local-model size limit is
 900 MB per model, including GPT4All files.
 
-### Run a local model directly (no Ollama)
+### Run Lucy with llama.cpp (no Ollama)
 
-Download a compatible `.gguf` model and install either local runtime. For
-llama.cpp on Apple Silicon, enable Metal acceleration during installation:
+On macOS, use the setup-and-run script to create an isolated Python environment,
+install llama.cpp (with Metal acceleration on Apple Silicon), and download the
+Qwen3 0.6B Q8 GGUF model (about 639 MB) to `~/.cache/lucy`. The model weights are
+not stored in the repository. The selected model is under Lucy's 900 MB limit.
 
 ```sh
 cd /path/to/Lucy
-source .venv/bin/activate
-CMAKE_ARGS="-DGGML_METAL=on" python -m pip install -r requirements-llama-cpp.txt
-export LUCY_MODEL_PATH="$HOME/Models/model.gguf"
-export LUCY_MODEL_BACKEND=llama-cpp
-python main.py
+./setup_local_llama.sh
 ```
 
-On Intel Macs, install the same pinned runtime without `CMAKE_ARGS` to use CPU
-inference. `llama-cpp-python` loads GGUF files directly and does not start or
-connect to Ollama. Set `LUCY_MODEL_CONTEXT` to choose a context size from 512
-to 32,768 tokens (default 4,096); a larger context needs more memory. Set the
-backend to `auto` to prefer llama.cpp on macOS when installed, or `gpt4all` to
-select GPT4All explicitly.
+The script caches model weights and its virtual environment outside the
+repository. Run it again to start Lucy later. It uses llama.cpp directly and
+does not start or connect to Ollama. It ignores exported API settings so an
+old Ollama URL cannot override the local backend. If a local model is already downloaded,
+provide its path with `LUCY_MODEL_PATH=/path/to/model.gguf` when running the
+script; otherwise the default cached model is used automatically when launching
+Lucy from an environment with llama.cpp installed.
+`llama-cpp-python` loads GGUF files directly. Set `LUCY_MODEL_CONTEXT` to choose
+a context size from 512 to 32,768 tokens (default 4,096); a larger context
+needs more memory.
+
+For Intel Macs, the script installs CPU inference without Metal. To install
+llama.cpp manually, use the optional requirements file in a virtual
+environment, adding `CMAKE_ARGS="-DGGML_METAL=on"` on Apple Silicon. Set
+`LUCY_MODEL_BACKEND=auto` to let Lucy choose an installed local runtime, or
+`gpt4all` to select GPT4All explicitly.
 Lucy can send its restricted tool definitions to llama.cpp models that support
 function calling in their GGUF chat template. GPT4All still supports normal
 local chat without structured model tool calls; Lucy's explicit slash commands
 remain available either way.
+See the [local llama.cpp wiki](docs/LOCAL-LLAMA-WIKI.md) for architecture,
+configuration, privacy boundaries, and troubleshooting.
 
 ## Generated conversations with Ollama
 

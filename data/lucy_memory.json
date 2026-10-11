@@ -3,22 +3,6 @@
   "history": [
     {
       "role": "user",
-      "content": "Aiden"
-    },
-    {
-      "role": "assistant",
-      "content": "I don't have your name. Could you please provide it? 😊"
-    },
-    {
-      "role": "user",
-      "content": "stop"
-    },
-    {
-      "role": "assistant",
-      "content": "I don't have your name. Could you please provide it? 😊"
-    },
-    {
-      "role": "user",
       "content": "hi"
     },
     {
@@ -160,6 +144,22 @@
     {
       "role": "assistant",
       "content": "I'm Lucy, a local assistant app. No conversational model is configured, so I answer basic questions and use my built-in references."
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! What would you like to talk about?"
+    },
+    {
+      "role": "user",
+      "content": "who are you?"
+    },
+    {
+      "role": "assistant",
+      "content": "I'm Lucy, a local AI assistant powered by llama.cpp."
     }
   ]
 }

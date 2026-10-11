@@ -27,6 +27,12 @@ class LucyTests(unittest.TestCase):
         self.root = Path(self.temporary_directory.name)
         self.memory_path = self.root / "memory.json"
         self.knowledge_path = self.root / "knowledge.json"
+        self.default_model_path_patch = patch(
+            "core.ai_engine.DEFAULT_LLAMA_MODEL_PATH",
+            self.root / "uncached-default.gguf",
+        )
+        self.default_model_path_patch.start()
+        self.addCleanup(self.default_model_path_patch.stop)
         self.knowledge_path.write_text(
             json.dumps(
                 {
@@ -300,6 +306,32 @@ class LucyTests(unittest.TestCase):
 
         self.assertFalse(lucy.api_base_url)
         self.assertIsNone(lucy.model)
+
+    def test_environment_prefers_cached_local_llama_model_without_contacting_ollama(self):
+        model_path = self.root / "Qwen3-0.6B-Q8_0.gguf"
+        model_path.write_bytes(b"test model")
+        model = object()
+        environment = {
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+            "LUCY_MODEL_PATH": "",
+            "LUCY_API_BASE_URL": "",
+            "LUCY_API_KEY": "",
+            "LUCY_API_MODEL": "",
+            "LUCY_CODING_API_MODEL": "",
+        }
+
+        with patch.dict(os.environ, environment), patch(
+            "core.ai_engine.DEFAULT_LLAMA_MODEL_PATH", model_path
+        ), patch.object(
+            Lucy, "_available_local_backends", return_value={"llama-cpp": True}
+        ), patch.object(Lucy, "_load_model", return_value=model) as load_model, patch(
+            "core.ai_engine.urllib.request.urlopen"
+        ) as urlopen:
+            lucy = Lucy.from_environment()
+
+        self.assertIs(model, lucy.model)
+        load_model.assert_called_once_with(str(model_path), "auto")
+        urlopen.assert_not_called()
 
     def test_invalid_api_base_url_fails_during_startup(self):
         for url in (

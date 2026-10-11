@@ -23,6 +23,9 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_KNOWLEDGE_PATH = PROJECT_ROOT / "knowledge_base.json"
 DEFAULT_MEMORY_PATH = PROJECT_ROOT / "data" / "lucy_memory.json"
 DEFAULT_LEARNED_PATH = PROJECT_ROOT / "data" / "lucy_learned.json"
+DEFAULT_LLAMA_MODEL_PATH = (
+    Path.home() / ".cache" / "lucy" / "models" / "Qwen3-0.6B-Q8_0.gguf"
+)
 SUPPLIED_RESEARCH_KNOWLEDGE_PATH = PROJECT_ROOT / "data" / "supplied_research_knowledge.json"
 CODING_REFERENCE_PATH = PROJECT_ROOT / "data" / "coding_reference.json"
 DEFAULT_API_TIMEOUT = 120
@@ -415,6 +418,13 @@ class Lucy:
         api_key = os.environ.get("LUCY_API_KEY") or None
         api_model = os.environ.get("LUCY_API_MODEL") or None
         coding_api_model = os.environ.get("LUCY_CODING_API_MODEL") or None
+        if (
+            not model_path
+            and not any((api_base_url, api_key, api_model))
+            and DEFAULT_LLAMA_MODEL_PATH.is_file()
+            and any(cls._available_local_backends().values())
+        ):
+            model_path = str(DEFAULT_LLAMA_MODEL_PATH)
         api_timeout = cls._api_timeout_from_environment()
         cls._validate_api_base_url(api_base_url or "")
         models = {}
