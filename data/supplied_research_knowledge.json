@@ -1,0 +1,362 @@
+{
+  "Emotion and feeling taxonomy (user-provided)": {
+    "summary": "A user-provided descriptive taxonomy with six primary categories: Happy, Sad, Angry, Fearful, Bad, and Disgust. Each category groups related secondary and tertiary feelings with short descriptions, synonyms, and intensity ratings. This is a vocabulary/reference aid, not a validated diagnostic or emotion-reading tool. Do not infer a person's feelings from this taxonomy or treat physical cues as definitive."
+  },
+  "Happy feelings (supplied taxonomy)": {
+    "summary": "From the user-provided descriptive emotion taxonomy; labels are not a clinical assessment.\nHappy: A state of joy, satisfaction, or positive well-being, often associated with feelings of pleasure and fulfillment.\nTaxonomy category: Positive.\nSource intensity rating: 4/5 (taxonomy rating, not a measurement).\nSynonyms: Joyful, Elated, Cheerful.\n- Playful (intensity 3/5): Feeling lighthearted and inclined to engage in fun or mischievous activities. Synonyms: Fun-loving, Whimsical, Jovial.\n  - Aroused (intensity 4/5): Experiencing excitement or eagerness, often with a sense of heightened energy. Synonyms: Excited, Eager, Thrilled.\n  - Cheeky (intensity 2/5): Being playfully bold or impudent, often in a charming or teasing way. Synonyms: Sassy, Impish, Mischievous.\n- Content (intensity 3/5): A state of calm satisfaction and peace with one's circumstances. Synonyms: Satisfied, At ease, Fulfilled.\n  - Free (intensity 4/5): Feeling unburdened and liberated from constraints or worries. Synonyms: Liberated, Unrestrained, Carefree.\n  - Joyful (intensity 5/5): Experiencing intense happiness and delight, often with a sense of elation. Synonyms: Ecstatic, Overjoyed, Delighted.\n- Interested (intensity 3/5): Feeling curious or engaged, with a desire to learn or explore more. Synonyms: Engaged, Fascinated, Intrigued.\n  - Curious (intensity 3/5): Having a strong desire to know or learn something new. Synonyms: Inquisitive, Wondering, Eager.\n  - Inquisitive (intensity 4/5): Being eager to investigate or ask questions, often showing a probing nature. Synonyms: Questioning, Probing, Curious.\n- Proud (intensity 4/5): Feeling a deep sense of satisfaction or achievement, often tied to personal or collective success. Synonyms: Satisfied, Accomplished, Pleased.\n  - Successful (intensity 5/5): Feeling accomplished after achieving a goal or receiving recognition. Synonyms: Triumphant, Victorious, Achieved.\n  - Confident (intensity 4/5): Having a strong belief in one's abilities or worth, often with a sense of self-assurance. Synonyms: Assured, Self-assured, Bold.\n- Accepted (intensity 4/5): Feeling recognized and valued by others, often leading to a sense of belonging. Synonyms: Welcomed, Included, Appreciated.\n  - Respected (intensity 4/5): Being admired or held in high regard by others. Synonyms: Admired, Honored, Esteemed.\n  - Valued (intensity 4/5): Feeling appreciated and important to others, often in a personal or professional context. Synonyms: Cherished, Prized, Appreciated.\n- Powerful (intensity 5/5): Feeling strong, capable, and in control, often with a sense of influence or impact. Synonyms: Strong, Empowered, Dominant.\n  - Courageous (intensity 5/5): Showing bravery and the willingness to face challenges or fears. Synonyms: Brave, Fearless, Valiant.\n  - Creative (intensity 4/5): Feeling inspired and capable of producing original ideas or solutions. Synonyms: Innovative, Imaginative, Inventive.\n- Peaceful (intensity 3/5): A state of tranquility and calm, often associated with inner harmony. Synonyms: Calm, Serene, Tranquil.\n  - Loving (intensity 5/5): Experiencing deep affection and warmth toward others. Synonyms: Affectionate, Caring, Warmhearted.\n  - Thankful (intensity 4/5): Feeling gratitude and appreciation for what one has or has experienced. Synonyms: Grateful, Appreciative, Thankful.\n- Trusting (intensity 4/5): Having confidence in others and feeling secure in relationships or situations. Synonyms: Confident, Secure, Reliant.\n  - Sensitive (intensity 3/5): Being emotionally attuned and empathetic, often with heightened awareness of others' feelings. Synonyms: Empathetic, Compassionate, Tender.\n  - Intimate (intensity 5/5): Feeling closely connected and emotionally open with someone, often in a personal relationship. Synonyms: Close, Connected, Bonded.\n- Optimistic (intensity 4/5): Having a hopeful and positive outlook on the future, expecting good outcomes. Synonyms: Hopeful, Positive, Upbeat.\n  - Hopeful (intensity 4/5): Feeling expectant and positive about future possibilities. Synonyms: Optimistic, Encouraged, Buoyant.\n  - Inspired (intensity 5/5): Being motivated or uplifted by an idea, person, or experience. Synonyms: Motivated, Uplifted, Energized."
+  },
+  "Sad feelings (supplied taxonomy)": {
+    "summary": "From the user-provided descriptive emotion taxonomy; labels are not a clinical assessment.\nSad: A state of unhappiness or sorrow, often associated with loss, disappointment, or emotional pain.\nTaxonomy category: Negative.\nSource intensity rating: 4/5 (taxonomy rating, not a measurement).\nSynonyms: Sorrowful, Mournful, Unhappy.\n- Lonely (intensity 4/5): Feeling isolated or disconnected from others, often with a sense of longing for connection. Synonyms: Alone, Isolated, Forlorn.\n  - Isolated (intensity 5/5): Feeling cut off or detached from others, either physically or emotionally. Synonyms: Separated, Detached, Alone.\n  - Abandoned (intensity 5/5): Feeling deserted or left behind, often with a sense of rejection. Synonyms: Forsaken, Deserted, Neglected.\n- Vulnerable (intensity 4/5): Feeling exposed or defenseless, often with a sense of emotional fragility. Synonyms: Fragile, Exposed, Sensitive.\n  - Victimized (intensity 5/5): Feeling unfairly treated or harmed, often with a sense of powerlessness. Synonyms: Persecuted, Oppressed, Harmed.\n  - Fragile (intensity 4/5): Feeling emotionally delicate and easily hurt or overwhelmed. Synonyms: Delicate, Breakable, Weak.\n- Despair (intensity 5/5): A deep sense of hopelessness and loss of faith in improvement or relief. Synonyms: Hopelessness, Despondency, Anguish.\n  - Grieving (intensity 5/5): Experiencing deep sorrow, often due to a significant loss such as the death of a loved one. Synonyms: Mourning, Sorrowing, Lamenting.\n  - Powerless (intensity 5/5): Feeling unable to influence or change a situation, often leading to helplessness. Synonyms: Helpless, Impotent, Weak.\n- Guilty (intensity 4/5): Feeling responsible for a wrongdoing or mistake, often accompanied by remorse. Synonyms: Remorseful, Regretful, Culpable.\n  - Ashamed (intensity 4/5): Feeling embarrassed or humiliated due to one's actions or perceived shortcomings. Synonyms: Embarrassed, Humiliated, Disgraced.\n  - Remorseful (intensity 5/5): Feeling deep regret and sorrow for past actions, often with a desire to make amends. Synonyms: Regretful, Penitent, Sorry.\n- Depressed (intensity 5/5): A state of prolonged sadness and low energy, often with feelings of emptiness. Synonyms: Melancholy, Downcast, Despondent.\n  - Empty (intensity 5/5): Feeling a lack of purpose, emotion, or fulfillment, often with a sense of hollowness. Synonyms: Hollow, Vacant, Void.\n  - Inferior (intensity 4/5): Feeling less capable or worthy than others, often tied to low self-esteem. Synonyms: Inadequate, Lesser, Unworthy.\n- Hurt (intensity 4/5): Feeling emotional pain or distress, often due to rejection or betrayal. Synonyms: Wounded, Pained, Upset.\n  - Embarrassed (intensity 3/5): Feeling self-conscious or ashamed, often due to a perceived social misstep. Synonyms: Ashamed, Humiliated, Awkward.\n  - Disappointed (intensity 4/5): Feeling let down or unsatisfied when expectations are not met. Synonyms: Let down, Dissatisfied, Disheartened."
+  },
+  "Angry feelings (supplied taxonomy)": {
+    "summary": "From the user-provided descriptive emotion taxonomy; labels are not a clinical assessment.\nAngry: A strong feeling of displeasure or hostility, often triggered by perceived wrongs or frustrations.\nTaxonomy category: Negative.\nSource intensity rating: 5/5 (taxonomy rating, not a measurement).\nSynonyms: Mad, Furious, Irate.\n- Let down (intensity 4/5): Feeling betrayed or disappointed by someone or something that failed to meet expectations. Synonyms: Betrayed, Disappointed, Deceived.\n  - Betrayed (intensity 5/5): Feeling deeply hurt by disloyalty or a breach of trust. Synonyms: Deceived, Backstabbed, Disloyal.\n  - Resentful (intensity 4/5): Harboring bitterness or anger due to perceived unfair treatment. Synonyms: Bitter, Grudgeful, Spiteful.\n- Humiliated (intensity 5/5): Feeling degraded or shamed, often due to public embarrassment or disrespect. Synonyms: Shamed, Mortified, Degraded.\n  - Disrespected (intensity 4/5): Feeling insulted or undervalued by others' actions or words. Synonyms: Insulted, Belittled, Disregarded.\n  - Ridiculed (intensity 5/5): Being mocked or made fun of, often leading to feelings of shame. Synonyms: Mocked, Teased, Derided.\n- Bitter (intensity 4/5): Feeling deep resentment or cynicism, often due to past grievances. Synonyms: Resentful, Cynical, Sour.\n  - Indignant (intensity 4/5): Feeling righteous anger or annoyance at perceived injustice. Synonyms: Outraged, Offended, Angry.\n  - Violated (intensity 5/5): Feeling that one's rights or boundaries have been unjustly crossed. Synonyms: Infringed, Invaded, Abused.\n- Mad (intensity 5/5): A state of intense anger or rage, often with a desire to confront the source of irritation. Synonyms: Furious, Enraged, Irate.\n  - Furious (intensity 5/5): Experiencing extreme anger, often with a loss of control or intense emotional heat. Synonyms: Enraged, Incensed, Livid.\n  - Jealous (intensity 4/5): Feeling anger or resentment due to envy of someone else's success or possessions. Synonyms: Envious, Covetous, Resentful.\n- Aggressive (intensity 5/5): Feeling ready to confront or attack, often with hostility or assertiveness. Synonyms: Hostile, Combative, Belligerent.\n  - Provoked (intensity 4/5): Feeling incited to anger or action by an external trigger. Synonyms: Triggered, Incited, Riled.\n  - Hostile (intensity 5/5): Feeling antagonistic or unfriendly, often with a desire to oppose or harm. Synonyms: Aggressive, Unfriendly, Combative.\n- Frustrated (intensity 4/5): Feeling irritated or blocked in achieving a goal, often leading to impatience. Synonyms: Irritated, Annoyed, Exasperated.\n  - Infuriated (intensity 5/5): Feeling extremely angry, often to the point of rage, due to a specific trigger. Synonyms: Enraged, Furious, Livid.\n  - Annoyed (intensity 3/5): Feeling mildly irritated or bothered by a persistent issue or behavior. Synonyms: Irritated, Bothered, Peeved.\n- Distant (intensity 3/5): Feeling emotionally detached or withdrawn, often as a response to anger or hurt. Synonyms: Detached, Aloof, Withdrawn.\n  - Withdrawn (intensity 4/5): Pulling back emotionally or socially, often to avoid conflict or pain. Synonyms: Detached, Isolated, Reserved.\n  - Numb (intensity 4/5): Feeling emotionally disconnected or unresponsive, often as a coping mechanism. Synonyms: Unfeeling, Detached, Emotionless.\n- Critical (intensity 3/5): Feeling inclined to judge or disapprove, often with a focus on flaws or shortcomings. Synonyms: Judgmental, Disapproving, Skeptical.\n  - Skeptical (intensity 3/5): Feeling doubtful or questioning, often with a lack of trust in others' intentions. Synonyms: Doubtful, Suspicious, Uncertain.\n  - Dismissive (intensity 3/5): Rejecting or disregarding something as unimportant or unworthy of attention. Synonyms: Disregarding, Indifferent, Uninterested."
+  },
+  "Fearful feelings (supplied taxonomy)": {
+    "summary": "From the user-provided descriptive emotion taxonomy; labels are not a clinical assessment.\nFearful: A state of anxiety or dread, often triggered by perceived threats or uncertainty.\nTaxonomy category: Negative.\nSource intensity rating: 4/5 (taxonomy rating, not a measurement).\nSynonyms: Afraid, Scared, Anxious.\n- Scared (intensity 5/5): Feeling afraid or frightened, often with a sense of impending danger. Synonyms: Frightened, Terrified, Alarmed.\n  - Helpless (intensity 5/5): Feeling unable to protect oneself or manage a threatening situation. Synonyms: Powerless, Defenseless, Weak.\n  - Frightened (intensity 5/5): Experiencing sudden fear or alarm, often due to a specific threat. Synonyms: Scared, Terrified, Alarmed.\n- Anxious (intensity 4/5): Feeling nervous or worried, often with a sense of unease about the future. Synonyms: Nervous, Worried, Uneasy.\n  - Overwhelmed (intensity 5/5): Feeling unable to cope with excessive demands or pressure. Synonyms: Swamped, Overloaded, Stressed.\n  - Worried (intensity 4/5): Feeling concerned or preoccupied about potential negative outcomes. Synonyms: Concerned, Anxious, Nervous.\n- Insecure (intensity 4/5): Feeling uncertain or lacking confidence, often with doubts about one's worth or abilities. Synonyms: Uncertain, Doubtful, Unsure.\n  - Inadequate (intensity 4/5): Feeling insufficient or not good enough to meet expectations. Synonyms: Insufficient, Lacking, Unworthy.\n  - Inferior (intensity 4/5): Feeling less capable or worthy compared to others. Synonyms: Lesser, Subpar, Unworthy.\n- Weak (intensity 4/5): Feeling powerless or lacking strength, often with a sense of vulnerability. Synonyms: Feeble, Fragile, Powerless.\n  - Worthless (intensity 5/5): Feeling without value or significance, often tied to low self-esteem. Synonyms: Useless, Valueless, Insignificant.\n  - Insignificant (intensity 4/5): Feeling unimportant or negligible, often with a sense of being overlooked. Synonyms: Trivial, Negligible, Unimportant.\n- Rejected (intensity 4/5): Feeling unwanted or excluded, often leading to fear of further rejection. Synonyms: Unwanted, Excluded, Dismissed.\n  - Excluded (intensity 4/5): Feeling deliberately left out or ostracized by others. Synonyms: Ostracized, Left out, Ignored.\n  - Persecuted (intensity 5/5): Feeling unfairly targeted or harassed, often with a sense of being a victim. Synonyms: Harassed, Oppressed, Victimized.\n- Threatened (intensity 5/5): Feeling at risk or endangered, often with a sense of exposure to harm. Synonyms: Endangered, At risk, Vulnerable.\n  - Nervous (intensity 4/5): Feeling uneasy or apprehensive, often with physical symptoms like restlessness. Synonyms: Anxious, Uneasy, Apprehensive.\n  - Exposed (intensity 4/5): Feeling unprotected or vulnerable to harm or judgment. Synonyms: Vulnerable, Unprotected, Open."
+  },
+  "Bad feelings (supplied taxonomy)": {
+    "summary": "From the user-provided descriptive emotion taxonomy; labels are not a clinical assessment.\nBad: A general state of unease or dissatisfaction, often related to boredom, stress, or fatigue.\nTaxonomy category: Negative.\nSource intensity rating: 3/5 (taxonomy rating, not a measurement).\nSynonyms: Unpleasant, Negative, Uncomfortable.\n- Bored (intensity 3/5): Feeling uninterested or disengaged, often due to a lack of stimulation. Synonyms: Uninterested, Disengaged, Listless.\n  - Apathetic (intensity 3/5): Feeling indifferent or unmotivated, often with a lack of emotional investment. Synonyms: Indifferent, Unmotivated, Unconcerned.\n  - Indifferent (intensity 2/5): Feeling neutral or uncaring, often with a lack of preference or concern. Synonyms: Unconcerned, Detached, Apathetic.\n- Busy (intensity 4/5): Feeling preoccupied or overworked, often with a sense of being stretched thin. Synonyms: Overworked, Preoccupied, Swamped.\n  - Pressured (intensity 4/5): Feeling stressed or pushed to meet demands, often with a sense of urgency. Synonyms: Stressed, Overwhelmed, Pushed.\n  - Rushed (intensity 4/5): Feeling hurried or under time pressure, often leading to anxiety. Synonyms: Hurried, Frantic, Pressed.\n- Stressed (intensity 5/5): Feeling tense or overwhelmed, often due to excessive demands or challenges. Synonyms: Tense, Overwhelmed, Strained.\n  - Overwhelmed (intensity 5/5): Feeling unable to manage or cope with the volume of tasks or emotions. Synonyms: Swamped, Overloaded, Flooded.\n  - Out of control (intensity 5/5): Feeling a lack of control over a situation, often leading to panic or frustration. Synonyms: Chaotic, Unmanageable, Overwhelmed.\n- Tired (intensity 4/5): Feeling physically or mentally exhausted, often due to lack of energy or rest. Synonyms: Exhausted, Fatigued, Weary.\n  - Sleepy (intensity 4/5): Feeling drowsy or in need of rest, often with difficulty staying alert. Synonyms: Drowsy, Sluggish, Lethargic.\n  - Unfocused (intensity 3/5): Feeling unable to concentrate or maintain attention, often due to fatigue. Synonyms: Distracted, Scattered, Unconcentrated."
+  },
+  "Disgust feelings (supplied taxonomy)": {
+    "summary": "From the user-provided descriptive emotion taxonomy; labels are not a clinical assessment.\nDisgust: A strong feeling of aversion or revulsion, often triggered by something unpleasant or offensive.\nTaxonomy category: Negative.\nSource intensity rating: 4/5 (taxonomy rating, not a measurement).\nSynonyms: Revulsion, Aversion, Repugnance.\n- Disapproving (intensity 3/5): Feeling critical or negative toward something deemed unacceptable or wrong. Synonyms: Critical, Judgmental, Displeased.\n  - Judgmental (intensity 3/5): Feeling inclined to harshly evaluate or condemn others' actions or behaviors. Synonyms: Critical, Disapproving, Condemning.\n  - Embarrassed (intensity 3/5): Feeling ashamed or uncomfortable due to association with something distasteful. Synonyms: Ashamed, Humiliated, Awkward.\n- Disappointed (intensity 4/5): Feeling let down or repelled by something that failed to meet moral or aesthetic standards. Synonyms: Let down, Dissatisfied, Disheartened.\n  - Appalled (intensity 5/5): Feeling shocked or horrified by something offensive or unacceptable. Synonyms: Horrified, Shocked, Outraged.\n  - Revolted (intensity 5/5): Feeling intense disgust or repulsion, often with a physical reaction. Synonyms: Repulsed, Sickened, Disgusted.\n- Awful (intensity 5/5): Feeling a strong sense of distaste or horror toward something deeply unpleasant. Synonyms: Horrible, Terrible, Dreadful.\n  - Nauseated (intensity 5/5): Feeling physically sick or queasy due to disgust or revulsion. Synonyms: Sickened, Queasy, Disgusted.\n  - Detestable (intensity 5/5): Feeling that something is utterly loathsome or abhorrent. Synonyms: Abhorrent, Loathsome, Repugnant.\n- Repelled (intensity 4/5): Feeling strongly pushed away or repulsed by something offensive or disturbing. Synonyms: Repulsed, Averse, Disgusted.\n  - Horrified (intensity 5/5): Feeling extreme shock or disgust, often with a sense of moral outrage. Synonyms: Appalled, Shocked, Outraged.\n  - Hesitant (intensity 3/5): Feeling reluctant or wary, often due to a sense of unease or disgust. Synonyms: Reluctant, Wary, Uncertain."
+  },
+  "Supplied image-triplet research data": {
+    "summary": "The supplied processed research records contain participant-keyed visual triplet trials: three ImageNet image paths, a selected image, response time, and trial labels such as within_class, between_class, and class_border. The source exports are repeated study snapshots and the processed pickle files contain participant records. This is visual similarity/grouping data, not emotion or conversational response data; participant-level records and identifiers are intentionally not copied into Lucy."
+  },
+  "Supplied fMRI checkpoint": {
+    "summary": "The supplied checkpoint and YAML configuration describe a specialized multimodal fMRI response encoder (FmriEncoder with an eight-layer transformer), configured to combine text, image, and video features and train against brain-response values. It is a research prediction model, not a conversational language model and not an emotion classifier. Its architecture requires the matching research code, data, and modality encoders; it cannot be loaded directly as a Qwen/Ollama or GPT4All chat model."
+  },
+  "Playful feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Playful.\nFeeling lighthearted and inclined to engage in fun or mischievous activities.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Fun-loving, Whimsical, Jovial.\nAntonyms: Serious, Stern, Rigid."
+  },
+  "Aroused feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Playful > Aroused.\nExperiencing excitement or eagerness, often with a sense of heightened energy.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Excited, Eager, Thrilled.\nAntonyms: Bored, Apathetic, Disinterested."
+  },
+  "Cheeky feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Playful > Cheeky.\nBeing playfully bold or impudent, often in a charming or teasing way.\nTaxonomy intensity rating: 2/5 (not a measured score).\nSynonyms: Sassy, Impish, Mischievous.\nAntonyms: Polite, Reserved, Formal."
+  },
+  "Content feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Content.\nA state of calm satisfaction and peace with one's circumstances.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Satisfied, At ease, Fulfilled.\nAntonyms: Restless, Dissatisfied, Uneasy."
+  },
+  "Free feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Content > Free.\nFeeling unburdened and liberated from constraints or worries.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Liberated, Unrestrained, Carefree.\nAntonyms: Trapped, Burdened, Restricted."
+  },
+  "Joyful feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Content > Joyful.\nExperiencing intense happiness and delight, often with a sense of elation.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Ecstatic, Overjoyed, Delighted.\nAntonyms: Miserable, Sorrowful, Depressed."
+  },
+  "Interested feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Interested.\nFeeling curious or engaged, with a desire to learn or explore more.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Engaged, Fascinated, Intrigued.\nAntonyms: Bored, Disinterested, Apathetic."
+  },
+  "Curious feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Interested > Curious.\nHaving a strong desire to know or learn something new.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Inquisitive, Wondering, Eager.\nAntonyms: Indifferent, Unconcerned, Disinterested."
+  },
+  "Inquisitive feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Interested > Inquisitive.\nBeing eager to investigate or ask questions, often showing a probing nature.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Questioning, Probing, Curious.\nAntonyms: Apathetic, Uncurious, Passive."
+  },
+  "Proud feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Proud.\nFeeling a deep sense of satisfaction or achievement, often tied to personal or collective success.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Satisfied, Accomplished, Pleased.\nAntonyms: Ashamed, Disappointed, Embarrassed."
+  },
+  "Successful feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Proud > Successful.\nFeeling accomplished after achieving a goal or receiving recognition.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Triumphant, Victorious, Achieved.\nAntonyms: Failed, Defeated, Unsuccessful."
+  },
+  "Confident feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Proud > Confident.\nHaving a strong belief in one's abilities or worth, often with a sense of self-assurance.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Assured, Self-assured, Bold.\nAntonyms: Insecure, Doubtful, Uncertain."
+  },
+  "Accepted feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Accepted.\nFeeling recognized and valued by others, often leading to a sense of belonging.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Welcomed, Included, Appreciated.\nAntonyms: Rejected, Excluded, Ignored."
+  },
+  "Respected feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Accepted > Respected.\nBeing admired or held in high regard by others.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Admired, Honored, Esteemed.\nAntonyms: Disrespected, Belittled, Disregarded."
+  },
+  "Valued feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Accepted > Valued.\nFeeling appreciated and important to others, often in a personal or professional context.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Cherished, Prized, Appreciated.\nAntonyms: Unappreciated, Undervalued, Overlooked."
+  },
+  "Powerful feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Powerful.\nFeeling strong, capable, and in control, often with a sense of influence or impact.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Strong, Empowered, Dominant.\nAntonyms: Weak, Powerless, Helpless."
+  },
+  "Courageous feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Powerful > Courageous.\nShowing bravery and the willingness to face challenges or fears.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Brave, Fearless, Valiant.\nAntonyms: Cowardly, Timid, Fearful."
+  },
+  "Creative feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Powerful > Creative.\nFeeling inspired and capable of producing original ideas or solutions.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Innovative, Imaginative, Inventive.\nAntonyms: Uninspired, Stagnant, Conventional."
+  },
+  "Peaceful feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Peaceful.\nA state of tranquility and calm, often associated with inner harmony.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Calm, Serene, Tranquil.\nAntonyms: Chaotic, Restless, Anxious."
+  },
+  "Loving feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Peaceful > Loving.\nExperiencing deep affection and warmth toward others.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Affectionate, Caring, Warmhearted.\nAntonyms: Hateful, Cold, Distant."
+  },
+  "Thankful feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Peaceful > Thankful.\nFeeling gratitude and appreciation for what one has or has experienced.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Grateful, Appreciative, Thankful.\nAntonyms: Ungrateful, Resentful, Dissatisfied."
+  },
+  "Trusting feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Trusting.\nHaving confidence in others and feeling secure in relationships or situations.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Confident, Secure, Reliant.\nAntonyms: Distrustful, Suspicious, Skeptical."
+  },
+  "Sensitive feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Trusting > Sensitive.\nBeing emotionally attuned and empathetic, often with heightened awareness of others' feelings.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Empathetic, Compassionate, Tender.\nAntonyms: Insensitive, Cold, Detached."
+  },
+  "Intimate feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Trusting > Intimate.\nFeeling closely connected and emotionally open with someone, often in a personal relationship.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Close, Connected, Bonded.\nAntonyms: Distant, Detached, Aloof."
+  },
+  "Optimistic feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Optimistic.\nHaving a hopeful and positive outlook on the future, expecting good outcomes.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Hopeful, Positive, Upbeat.\nAntonyms: Pessimistic, Hopeless, Gloomy."
+  },
+  "Hopeful feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Optimistic > Hopeful.\nFeeling expectant and positive about future possibilities.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Optimistic, Encouraged, Buoyant.\nAntonyms: Hopeless, Despairing, Pessimistic."
+  },
+  "Inspired feeling (Happy taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Happy > Optimistic > Inspired.\nBeing motivated or uplifted by an idea, person, or experience.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Motivated, Uplifted, Energized.\nAntonyms: Uninspired, Demotivated, Flat."
+  },
+  "Lonely feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Lonely.\nFeeling isolated or disconnected from others, often with a sense of longing for connection.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Alone, Isolated, Forlorn.\nAntonyms: Connected, Included, Sociable."
+  },
+  "Isolated feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Lonely > Isolated.\nFeeling cut off or detached from others, either physically or emotionally.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Separated, Detached, Alone.\nAntonyms: Connected, Engaged, Included."
+  },
+  "Abandoned feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Lonely > Abandoned.\nFeeling deserted or left behind, often with a sense of rejection.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Forsaken, Deserted, Neglected.\nAntonyms: Supported, Cherished, Included."
+  },
+  "Vulnerable feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Vulnerable.\nFeeling exposed or defenseless, often with a sense of emotional fragility.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Fragile, Exposed, Sensitive.\nAntonyms: Secure, Protected, Strong."
+  },
+  "Victimized feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Vulnerable > Victimized.\nFeeling unfairly treated or harmed, often with a sense of powerlessness.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Persecuted, Oppressed, Harmed.\nAntonyms: Empowered, Protected, Safe."
+  },
+  "Fragile feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Vulnerable > Fragile.\nFeeling emotionally delicate and easily hurt or overwhelmed.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Delicate, Breakable, Weak.\nAntonyms: Resilient, Strong, Tough."
+  },
+  "Despair feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Despair.\nA deep sense of hopelessness and loss of faith in improvement or relief.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Hopelessness, Despondency, Anguish.\nAntonyms: Hope, Optimism, Faith."
+  },
+  "Grieving feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Despair > Grieving.\nExperiencing deep sorrow, often due to a significant loss such as the death of a loved one.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Mourning, Sorrowing, Lamenting.\nAntonyms: Celebrating, Rejoicing, Joyful."
+  },
+  "Powerless feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Despair > Powerless.\nFeeling unable to influence or change a situation, often leading to helplessness.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Helpless, Impotent, Weak.\nAntonyms: Powerful, Capable, In control."
+  },
+  "Guilty feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Guilty.\nFeeling responsible for a wrongdoing or mistake, often accompanied by remorse.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Remorseful, Regretful, Culpable.\nAntonyms: Innocent, Unburdened, Righteous."
+  },
+  "Ashamed feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Guilty > Ashamed.\nFeeling embarrassed or humiliated due to one's actions or perceived shortcomings.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Embarrassed, Humiliated, Disgraced.\nAntonyms: Proud, Confident, Honored."
+  },
+  "Remorseful feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Guilty > Remorseful.\nFeeling deep regret and sorrow for past actions, often with a desire to make amends.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Regretful, Penitent, Sorry.\nAntonyms: Unapologetic, Indifferent, Unconcerned."
+  },
+  "Depressed feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Depressed.\nA state of prolonged sadness and low energy, often with feelings of emptiness.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Melancholy, Downcast, Despondent.\nAntonyms: Cheerful, Upbeat, Joyful."
+  },
+  "Empty feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Depressed > Empty.\nFeeling a lack of purpose, emotion, or fulfillment, often with a sense of hollowness.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Hollow, Vacant, Void.\nAntonyms: Fulfilled, Whole, Content."
+  },
+  "Inferior feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Depressed > Inferior.\nFeeling less capable or worthy than others, often tied to low self-esteem.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Inadequate, Lesser, Unworthy.\nAntonyms: Superior, Confident, Worthy."
+  },
+  "Hurt feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Hurt.\nFeeling emotional pain or distress, often due to rejection or betrayal.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Wounded, Pained, Upset.\nAntonyms: Healed, Comforted, Happy."
+  },
+  "Embarrassed feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Hurt > Embarrassed.\nFeeling self-conscious or ashamed, often due to a perceived social misstep.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Ashamed, Humiliated, Awkward.\nAntonyms: Confident, Proud, Assured."
+  },
+  "Disappointed feeling (Sad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Sad > Hurt > Disappointed.\nFeeling let down or unsatisfied when expectations are not met.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Let down, Dissatisfied, Disheartened.\nAntonyms: Satisfied, Fulfilled, Pleased."
+  },
+  "Let down feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Let down.\nFeeling betrayed or disappointed by someone or something that failed to meet expectations.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Betrayed, Disappointed, Deceived.\nAntonyms: Supported, Fulfilled, Trusted."
+  },
+  "Betrayed feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Let down > Betrayed.\nFeeling deeply hurt by disloyalty or a breach of trust.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Deceived, Backstabbed, Disloyal.\nAntonyms: Trusted, Loyal, Supported."
+  },
+  "Resentful feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Let down > Resentful.\nHarboring bitterness or anger due to perceived unfair treatment.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Bitter, Grudgeful, Spiteful.\nAntonyms: Forgiving, Understanding, Peaceful."
+  },
+  "Humiliated feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Humiliated.\nFeeling degraded or shamed, often due to public embarrassment or disrespect.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Shamed, Mortified, Degraded.\nAntonyms: Respected, Honored, Dignified."
+  },
+  "Disrespected feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Humiliated > Disrespected.\nFeeling insulted or undervalued by others' actions or words.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Insulted, Belittled, Disregarded.\nAntonyms: Respected, Valued, Appreciated."
+  },
+  "Ridiculed feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Humiliated > Ridiculed.\nBeing mocked or made fun of, often leading to feelings of shame.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Mocked, Teased, Derided.\nAntonyms: Praised, Admired, Respected."
+  },
+  "Bitter feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Bitter.\nFeeling deep resentment or cynicism, often due to past grievances.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Resentful, Cynical, Sour.\nAntonyms: Forgiving, Optimistic, Sweet."
+  },
+  "Indignant feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Bitter > Indignant.\nFeeling righteous anger or annoyance at perceived injustice.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Outraged, Offended, Angry.\nAntonyms: Accepting, Calm, Unbothered."
+  },
+  "Violated feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Bitter > Violated.\nFeeling that one's rights or boundaries have been unjustly crossed.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Infringed, Invaded, Abused.\nAntonyms: Respected, Protected, Safe."
+  },
+  "Mad feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Mad.\nA state of intense anger or rage, often with a desire to confront the source of irritation.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Furious, Enraged, Irate.\nAntonyms: Calm, Peaceful, Content."
+  },
+  "Furious feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Mad > Furious.\nExperiencing extreme anger, often with a loss of control or intense emotional heat.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Enraged, Incensed, Livid.\nAntonyms: Calm, Relaxed, Peaceful."
+  },
+  "Jealous feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Mad > Jealous.\nFeeling anger or resentment due to envy of someone else's success or possessions.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Envious, Covetous, Resentful.\nAntonyms: Content, Satisfied, Grateful."
+  },
+  "Aggressive feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Aggressive.\nFeeling ready to confront or attack, often with hostility or assertiveness.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Hostile, Combative, Belligerent.\nAntonyms: Peaceful, Passive, Calm."
+  },
+  "Provoked feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Aggressive > Provoked.\nFeeling incited to anger or action by an external trigger.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Triggered, Incited, Riled.\nAntonyms: Calm, Unbothered, Peaceful."
+  },
+  "Hostile feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Aggressive > Hostile.\nFeeling antagonistic or unfriendly, often with a desire to oppose or harm.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Aggressive, Unfriendly, Combative.\nAntonyms: Friendly, Welcoming, Peaceful."
+  },
+  "Frustrated feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Frustrated.\nFeeling irritated or blocked in achieving a goal, often leading to impatience.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Irritated, Annoyed, Exasperated.\nAntonyms: Satisfied, Calm, Patient."
+  },
+  "Infuriated feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Frustrated > Infuriated.\nFeeling extremely angry, often to the point of rage, due to a specific trigger.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Enraged, Furious, Livid.\nAntonyms: Calm, Peaceful, Content."
+  },
+  "Annoyed feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Frustrated > Annoyed.\nFeeling mildly irritated or bothered by a persistent issue or behavior.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Irritated, Bothered, Peeved.\nAntonyms: Pleased, Content, Calm."
+  },
+  "Distant feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Distant.\nFeeling emotionally detached or withdrawn, often as a response to anger or hurt.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Detached, Aloof, Withdrawn.\nAntonyms: Connected, Engaged, Warm."
+  },
+  "Withdrawn feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Distant > Withdrawn.\nPulling back emotionally or socially, often to avoid conflict or pain.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Detached, Isolated, Reserved.\nAntonyms: Engaged, Open, Sociable."
+  },
+  "Numb feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Distant > Numb.\nFeeling emotionally disconnected or unresponsive, often as a coping mechanism.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Unfeeling, Detached, Emotionless.\nAntonyms: Sensitive, Engaged, Emotional."
+  },
+  "Critical feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Critical.\nFeeling inclined to judge or disapprove, often with a focus on flaws or shortcomings.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Judgmental, Disapproving, Skeptical.\nAntonyms: Accepting, Approving, Supportive."
+  },
+  "Skeptical feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Critical > Skeptical.\nFeeling doubtful or questioning, often with a lack of trust in others' intentions.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Doubtful, Suspicious, Uncertain.\nAntonyms: Trusting, Believing, Confident."
+  },
+  "Dismissive feeling (Angry taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Angry > Critical > Dismissive.\nRejecting or disregarding something as unimportant or unworthy of attention.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Disregarding, Indifferent, Uninterested.\nAntonyms: Attentive, Interested, Engaged."
+  },
+  "Scared feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Scared.\nFeeling afraid or frightened, often with a sense of impending danger.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Frightened, Terrified, Alarmed.\nAntonyms: Fearless, Brave, Calm."
+  },
+  "Helpless feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Scared > Helpless.\nFeeling unable to protect oneself or manage a threatening situation.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Powerless, Defenseless, Weak.\nAntonyms: Capable, Empowered, Strong."
+  },
+  "Frightened feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Scared > Frightened.\nExperiencing sudden fear or alarm, often due to a specific threat.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Scared, Terrified, Alarmed.\nAntonyms: Calm, Brave, Fearless."
+  },
+  "Anxious feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Anxious.\nFeeling nervous or worried, often with a sense of unease about the future.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Nervous, Worried, Uneasy.\nAntonyms: Calm, Relaxed, Confident."
+  },
+  "Overwhelmed feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Anxious > Overwhelmed.\nFeeling unable to cope with excessive demands or pressure.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Swamped, Overloaded, Stressed.\nAntonyms: Calm, Managed, Relaxed."
+  },
+  "Worried feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Anxious > Worried.\nFeeling concerned or preoccupied about potential negative outcomes.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Concerned, Anxious, Nervous.\nAntonyms: Carefree, Relaxed, Unconcerned."
+  },
+  "Insecure feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Insecure.\nFeeling uncertain or lacking confidence, often with doubts about one's worth or abilities.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Uncertain, Doubtful, Unsure.\nAntonyms: Confident, Secure, Assured."
+  },
+  "Inadequate feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Insecure > Inadequate.\nFeeling insufficient or not good enough to meet expectations.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Insufficient, Lacking, Unworthy.\nAntonyms: Adequate, Capable, Enough."
+  },
+  "Inferior feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Insecure > Inferior.\nFeeling less capable or worthy compared to others.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Lesser, Subpar, Unworthy.\nAntonyms: Superior, Confident, Worthy."
+  },
+  "Weak feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Weak.\nFeeling powerless or lacking strength, often with a sense of vulnerability.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Feeble, Fragile, Powerless.\nAntonyms: Strong, Powerful, Resilient."
+  },
+  "Worthless feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Weak > Worthless.\nFeeling without value or significance, often tied to low self-esteem.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Useless, Valueless, Insignificant.\nAntonyms: Valuable, Worthy, Important."
+  },
+  "Insignificant feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Weak > Insignificant.\nFeeling unimportant or negligible, often with a sense of being overlooked.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Trivial, Negligible, Unimportant.\nAntonyms: Significant, Important, Notable."
+  },
+  "Rejected feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Rejected.\nFeeling unwanted or excluded, often leading to fear of further rejection.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Unwanted, Excluded, Dismissed.\nAntonyms: Accepted, Included, Welcomed."
+  },
+  "Excluded feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Rejected > Excluded.\nFeeling deliberately left out or ostracized by others.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Ostracized, Left out, Ignored.\nAntonyms: Included, Welcomed, Engaged."
+  },
+  "Persecuted feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Rejected > Persecuted.\nFeeling unfairly targeted or harassed, often with a sense of being a victim.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Harassed, Oppressed, Victimized.\nAntonyms: Protected, Supported, Safe."
+  },
+  "Threatened feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Threatened.\nFeeling at risk or endangered, often with a sense of exposure to harm.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Endangered, At risk, Vulnerable.\nAntonyms: Safe, Protected, Secure."
+  },
+  "Nervous feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Threatened > Nervous.\nFeeling uneasy or apprehensive, often with physical symptoms like restlessness.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Anxious, Uneasy, Apprehensive.\nAntonyms: Calm, Relaxed, Confident."
+  },
+  "Exposed feeling (Fearful taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Fearful > Threatened > Exposed.\nFeeling unprotected or vulnerable to harm or judgment.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Vulnerable, Unprotected, Open.\nAntonyms: Protected, Safe, Shielded."
+  },
+  "Bored feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Bored.\nFeeling uninterested or disengaged, often due to a lack of stimulation.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Uninterested, Disengaged, Listless.\nAntonyms: Interested, Engaged, Excited."
+  },
+  "Apathetic feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Bored > Apathetic.\nFeeling indifferent or unmotivated, often with a lack of emotional investment.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Indifferent, Unmotivated, Unconcerned.\nAntonyms: Passionate, Motivated, Engaged."
+  },
+  "Indifferent feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Bored > Indifferent.\nFeeling neutral or uncaring, often with a lack of preference or concern.\nTaxonomy intensity rating: 2/5 (not a measured score).\nSynonyms: Unconcerned, Detached, Apathetic.\nAntonyms: Concerned, Interested, Engaged."
+  },
+  "Busy feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Busy.\nFeeling preoccupied or overworked, often with a sense of being stretched thin.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Overworked, Preoccupied, Swamped.\nAntonyms: Idle, Relaxed, Free."
+  },
+  "Pressured feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Busy > Pressured.\nFeeling stressed or pushed to meet demands, often with a sense of urgency.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Stressed, Overwhelmed, Pushed.\nAntonyms: Relaxed, Calm, Unpressured."
+  },
+  "Rushed feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Busy > Rushed.\nFeeling hurried or under time pressure, often leading to anxiety.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Hurried, Frantic, Pressed.\nAntonyms: Calm, Leisurely, Relaxed."
+  },
+  "Stressed feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Stressed.\nFeeling tense or overwhelmed, often due to excessive demands or challenges.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Tense, Overwhelmed, Strained.\nAntonyms: Relaxed, Calm, Peaceful."
+  },
+  "Overwhelmed feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Stressed > Overwhelmed.\nFeeling unable to manage or cope with the volume of tasks or emotions.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Swamped, Overloaded, Flooded.\nAntonyms: Managed, Calm, Relaxed."
+  },
+  "Out of control feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Stressed > Out of control.\nFeeling a lack of control over a situation, often leading to panic or frustration.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Chaotic, Unmanageable, Overwhelmed.\nAntonyms: In control, Managed, Calm."
+  },
+  "Tired feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Tired.\nFeeling physically or mentally exhausted, often due to lack of energy or rest.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Exhausted, Fatigued, Weary.\nAntonyms: Energized, Rested, Refreshed."
+  },
+  "Sleepy feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Tired > Sleepy.\nFeeling drowsy or in need of rest, often with difficulty staying alert.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Drowsy, Sluggish, Lethargic.\nAntonyms: Alert, Awake, Energized."
+  },
+  "Unfocused feeling (Bad taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Bad > Tired > Unfocused.\nFeeling unable to concentrate or maintain attention, often due to fatigue.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Distracted, Scattered, Unconcentrated.\nAntonyms: Focused, Attentive, Concentrated."
+  },
+  "Disapproving feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Disapproving.\nFeeling critical or negative toward something deemed unacceptable or wrong.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Critical, Judgmental, Displeased.\nAntonyms: Approving, Accepting, Pleased."
+  },
+  "Judgmental feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Disapproving > Judgmental.\nFeeling inclined to harshly evaluate or condemn others' actions or behaviors.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Critical, Disapproving, Condemning.\nAntonyms: Accepting, Understanding, Tolerant."
+  },
+  "Embarrassed feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Disapproving > Embarrassed.\nFeeling ashamed or uncomfortable due to association with something distasteful.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Ashamed, Humiliated, Awkward.\nAntonyms: Proud, Confident, Assured."
+  },
+  "Disappointed feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Disappointed.\nFeeling let down or repelled by something that failed to meet moral or aesthetic standards.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Let down, Dissatisfied, Disheartened.\nAntonyms: Satisfied, Pleased, Fulfilled."
+  },
+  "Appalled feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Disappointed > Appalled.\nFeeling shocked or horrified by something offensive or unacceptable.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Horrified, Shocked, Outraged.\nAntonyms: Pleased, Delighted, Approving."
+  },
+  "Revolted feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Disappointed > Revolted.\nFeeling intense disgust or repulsion, often with a physical reaction.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Repulsed, Sickened, Disgusted.\nAntonyms: Attracted, Pleased, Delighted."
+  },
+  "Awful feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Awful.\nFeeling a strong sense of distaste or horror toward something deeply unpleasant.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Horrible, Terrible, Dreadful.\nAntonyms: Wonderful, Pleasant, Delightful."
+  },
+  "Nauseated feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Awful > Nauseated.\nFeeling physically sick or queasy due to disgust or revulsion.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Sickened, Queasy, Disgusted.\nAntonyms: Comfortable, Well, Pleased."
+  },
+  "Detestable feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Awful > Detestable.\nFeeling that something is utterly loathsome or abhorrent.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Abhorrent, Loathsome, Repugnant.\nAntonyms: Admirable, Lovely, Appealing."
+  },
+  "Repelled feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Repelled.\nFeeling strongly pushed away or repulsed by something offensive or disturbing.\nTaxonomy intensity rating: 4/5 (not a measured score).\nSynonyms: Repulsed, Averse, Disgusted.\nAntonyms: Attracted, Drawn, Pleased."
+  },
+  "Horrified feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Repelled > Horrified.\nFeeling extreme shock or disgust, often with a sense of moral outrage.\nTaxonomy intensity rating: 5/5 (not a measured score).\nSynonyms: Appalled, Shocked, Outraged.\nAntonyms: Pleased, Delighted, Calm."
+  },
+  "Hesitant feeling (Disgust taxonomy)": {
+    "summary": "From a user-provided descriptive taxonomy; this is not a clinical assessment.\nTaxonomy path: Disgust > Repelled > Hesitant.\nFeeling reluctant or wary, often due to a sense of unease or disgust.\nTaxonomy intensity rating: 3/5 (not a measured score).\nSynonyms: Reluctant, Wary, Uncertain.\nAntonyms: Eager, Confident, Willing."
+  }
+}

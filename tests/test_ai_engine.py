@@ -45,20 +45,88 @@ class LucyTests(unittest.TestCase):
         self.assertIn("/remember", self.lucy.respond("/help"))
         self.assertIn("knowledge-only mode", self.lucy.respond("/status"))
 
+    def test_supplied_emotion_taxonomy_is_available_as_local_reference(self):
+        answer = self.lucy.respond("What does lonely mean?")
+
+        self.assertIn("Lonely", answer)
+        self.assertIn("isolated or disconnected", answer)
+        self.assertIn("not a clinical assessment", answer)
+
+    def test_supplied_research_notes_are_searchable_without_participant_records(self):
+        image_data = self.lucy.respond(
+            "What is the supplied image-triplet research data?"
+        )
+        checkpoint = self.lucy.respond("What is the supplied fMRI checkpoint?")
+
+        self.assertIn("visual similarity/grouping data", image_data)
+        self.assertIn("not emotion", image_data)
+        self.assertIn("not a conversational language model", checkpoint)
+        self.assertFalse(any("participant_" in summary for _, summary in self.lucy.knowledge))
+
+    def test_supplied_emotion_reference_is_included_in_model_context(self):
+        lucy = self.make_api_lucy()
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "The supplied taxonomy groups loneliness under sadness."}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+                answer = lucy.respond("What does lonely mean?")
+
+        self.assertIn("sadness", answer)
+        self.assertIn("isolated or disconnected", requests[0]["messages"][0]["content"])
+
+    def test_common_identity_questions_describe_configured_ai_mode(self):
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+        )
+
+        self.assertIn("qwen3", lucy.respond("what are you").casefold())
+        self.assertIn("Ollama", lucy.respond("who are you?"))
+
+    def test_common_date_questions_return_the_current_local_date(self):
+        with patch("core.ai_engine.datetime") as mock_datetime:
+            mock_datetime.now.return_value.astimezone.return_value.strftime.return_value = (
+                "Today is Sunday, October 11, 2026."
+            )
+
+            responses = [
+                self.lucy.respond("tell me the date"),
+                self.lucy.respond("what is today's date"),
+                self.lucy.respond("tell me the date?"),
+                self.lucy.respond("what day is it?"),
+            ]
+
+        self.assertEqual(
+            ["Today is Sunday, October 11, 2026."] * 4,
+            responses,
+        )
+        mock_datetime.now.assert_called()
+
     def test_environment_auto_detects_installed_ollama_qwen3(self):
         response = Mock()
         response.__enter__ = Mock(return_value=response)
         response.__exit__ = Mock(return_value=False)
-        response.read.return_value = json.dumps(
-            {"models": [{"name": "qwen3:0.6b"}, {"name": "qwen3:1.7b"}]}
-        ).encode("utf-8")
         environment = {
             "LUCY_MEMORY_PATH": str(self.memory_path),
             "LUCY_MODEL_PATH": "",
             "LUCY_API_BASE_URL": "",
             "LUCY_API_KEY": "",
             "LUCY_API_MODEL": "",
+            "LUCY_CODING_API_MODEL": "",
         }
+        models = [
+            {"name": "qwen3:0.6b", "size": 522_653_767},
+            {"name": "qwen2.5-coder:0.5b", "size": 397_000_000},
+            {"name": "qwen3:1.7b", "size": 1_359_293_444},
+        ]
+        response.read.return_value = json.dumps({"models": models}).encode("utf-8")
 
         with patch.dict(os.environ, environment), patch(
             "core.ai_engine.urllib.request.urlopen", return_value=response
@@ -67,7 +135,50 @@ class LucyTests(unittest.TestCase):
 
         self.assertEqual("http://localhost:11434/v1", lucy.api_base_url)
         self.assertEqual("qwen3:0.6b", lucy.api_model)
+        self.assertEqual("qwen2.5-coder:0.5b", lucy.coding_api_model)
         self.assertEqual(1, urlopen.call_count)
+
+    def test_environment_rejects_local_models_over_six_hundred_mb(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.read.return_value = json.dumps(
+            {"models": [{"name": "qwen3:1.7b", "size": 1_359_293_444}]}
+        ).encode("utf-8")
+        environment = {
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+            "LUCY_API_BASE_URL": "http://localhost:11434/v1",
+            "LUCY_API_MODEL": "qwen3:1.7b",
+            "LUCY_API_KEY": "",
+            "LUCY_CODING_API_MODEL": "",
+            "LUCY_MODEL_PATH": "",
+        }
+
+        with patch.dict(os.environ, environment), patch(
+            "core.ai_engine.urllib.request.urlopen", return_value=response
+        ), self.assertRaisesRegex(RuntimeError, "exceeds Lucy's 600 MB model limit"):
+            Lucy.from_environment()
+
+    def test_environment_rejects_oversized_local_coding_model(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.read.return_value = json.dumps(
+            {"models": [{"name": "qwen2.5-coder:1.5b", "size": 986_000_000}]}
+        ).encode("utf-8")
+        environment = {
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+            "LUCY_API_BASE_URL": "http://localhost:11434/v1",
+            "LUCY_API_MODEL": "qwen3:0.6b",
+            "LUCY_API_KEY": "",
+            "LUCY_CODING_API_MODEL": "qwen2.5-coder:1.5b",
+            "LUCY_MODEL_PATH": "",
+        }
+
+        with patch.dict(os.environ, environment), patch(
+            "core.ai_engine.urllib.request.urlopen", return_value=response
+        ), self.assertRaisesRegex(RuntimeError, "coding model .* exceeds Lucy's 600 MB model limit"):
+            Lucy.from_environment()
 
     def test_environment_keeps_knowledge_only_when_ollama_is_unavailable(self):
         environment = {
@@ -191,6 +302,199 @@ class LucyTests(unittest.TestCase):
         system_message = request_messages[0]["content"]
         self.assertIn("Python programming", system_message)
         self.assertIn("smallest complete change", system_message)
+
+    def test_coding_questions_use_sub_600_mb_specialist_without_tools(self):
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+            coding_api_model="qwen2.5-coder:0.5b",
+        )
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "A function is defined with def."}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            answer = lucy.respond("Explain how to write a Python function.")
+
+        self.assertIn("function", answer)
+        self.assertEqual("qwen2.5-coder:0.5b", requests[0]["model"])
+        self.assertNotIn("tools", requests[0])
+        self.assertEqual(0.3, requests[0]["temperature"])
+
+    def test_project_coding_keeps_tool_capable_qwen3_model_and_thinks(self):
+        project = self.root / "project"
+        project.mkdir()
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+            coding_api_model="qwen2.5-coder:0.5b",
+            code_directory=project,
+        )
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "I can help review your Python code."}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            lucy.respond("Explain how to write a Python function.")
+
+        self.assertEqual("qwen3:0.6b", requests[0]["model"])
+        self.assertIn("tools", requests[0])
+        self.assertIs(requests[0]["think"], True)
+
+    def test_file_analysis_without_workspace_explains_required_setup(self):
+        lucy = self.make_api_lucy()
+
+        with patch.object(lucy, "_api_response") as api_response:
+            answer = lucy.respond("analayze your main file")
+
+        self.assertIn("coding workspace is disabled", answer)
+        self.assertIn("LUCY_CODE_DIR", answer)
+        self.assertNotIn("<search_learned_files", answer)
+        api_response.assert_not_called()
+
+    def test_file_analysis_reads_only_requested_file_and_uses_model_without_tools(self):
+        project = self.root / "project"
+        project.mkdir()
+        (project / "reasoning.py").write_text(
+            "def answer(question):\n    return question.strip()\n",
+            encoding="utf-8",
+        )
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+            coding_api_model="qwen2.5-coder:0.5b",
+            code_directory=project,
+        )
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "The function strips whitespace from its input."}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            answer = lucy.respond("analayze reasoning.py")
+
+        self.assertIn("strips whitespace", answer)
+        self.assertEqual("qwen3:0.6b", requests[0]["model"])
+        self.assertNotIn("tools", requests[0])
+        self.assertEqual(0.1, requests[0]["temperature"])
+        self.assertIs(requests[0]["think"], False)
+        self.assertIn(
+            "def answer(question)",
+            requests[0]["messages"][-1]["content"],
+        )
+        self.assertNotIn("BEGIN FILE", requests[0]["messages"][0]["content"])
+
+    def test_python_file_analysis_reports_verified_structure_after_generic_model_reply(self):
+        project = self.root / "project"
+        project.mkdir()
+        (project / "main.py").write_text(
+            "import os\n"
+            "import sys\n"
+            "from core.ai_engine import Lucy\n\n"
+            "def confirm_computer_action(action):\n"
+            "    return bool(action)\n\n"
+            "def main():\n"
+            "    return Lucy()\n\n"
+            "if __name__ == \"__main__\":\n"
+            "    sys.exit(main())\n",
+            encoding="utf-8",
+        )
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+            code_directory=project,
+        )
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {
+                    "role": "assistant",
+                    "content": "The file initializes the application and handles user interaction.",
+                }
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            answer = lucy.respond("analyze main.py")
+
+        self.assertIn("Top-level definitions: `confirm_computer_action`", answer)
+        self.assertIn("`main`", answer)
+        self.assertIn("calls `main()` when run directly", answer)
+        self.assertIn("Verified Python structure", requests[0]["messages"][-1]["content"])
+        self.assertNotIn("tools", requests[0])
+
+    def test_python_file_analysis_keeps_static_outline_if_model_returns_no_text(self):
+        project = self.root / "project"
+        project.mkdir()
+        (project / "main.py").write_text(
+            "def main():\n    pass\n\n"
+            "if __name__ == \"__main__\":\n    main()\n",
+            encoding="utf-8",
+        )
+        lucy = self.make_api_lucy(code_directory=project)
+
+        with patch.object(
+            lucy,
+            "_api_response",
+            side_effect=RuntimeError("The configured chat API returned an empty response."),
+        ):
+            answer = lucy.respond("analyze main.py")
+
+        self.assertIn("The model returned no analysis text", answer)
+        self.assertIn("Top-level definitions: `main`", answer)
+        self.assertIn("calls `main()` when run directly", answer)
+
+    def test_analysis_followup_filename_completes_pending_request(self):
+        project = self.root / "project"
+        project.mkdir()
+        (project / "reasoning.py").write_text(
+            "def answer(question):\n    return question.strip()\n",
+            encoding="utf-8",
+        )
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+            coding_api_model="qwen2.5-coder:0.5b",
+            code_directory=project,
+        )
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "The file defines a small text-normalizing function."}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            prompt = lucy.respond("analyze your main file")
+            answer = lucy.respond("reasoning.py")
+
+        self.assertIn("relative file path", prompt)
+        self.assertIn("text-normalizing", answer)
+        self.assertEqual(1, len(requests))
+        self.assertNotIn("tools", requests[0])
 
     def test_ai_alias_matches_artificial_intelligence_entry(self):
         self.knowledge_path.write_text(

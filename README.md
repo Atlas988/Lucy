@@ -1,9 +1,11 @@
 # Lucy
 
 Lucy is a text-based assistant with persistent conversation context, local
-knowledge lookup, safe arithmetic, explicit Wikipedia lookups, and optional
-speech. For generated conversations, it supports either a local GPT4All model
-or an OpenAI-compatible chat API (including a local Ollama server).
+knowledge lookup, safe arithmetic, current date and time answers, explicit
+Wikipedia lookups, and optional speech. Common identity, date, and time
+questions are answered directly by Lucy rather than delegated to the language
+model. For generated conversations, it supports either a local GPT4All model or
+an OpenAI-compatible chat API (including a local Ollama server).
 
 ## Run Lucy
 
@@ -37,27 +39,35 @@ Lucy runs in knowledge-only mode without extra packages or a model. In that
 mode, it answers simple built-in questions and questions covered by the local
 knowledge base; it does not pretend to generate answers to other questions.
 When started without model settings, Lucy detects a running local Ollama server
-if it has Qwen3 0.6B or Qwen3 1.7B installed.
+if it has a supported model installed. Lucy selects the Qwen3 0.6B general
+model and, when available, Qwen2.5-Coder 0.5B for coding questions. Each model
+Lucy selects automatically is limited to 600 MB.
 
 ## Generated conversations with Ollama
 
 Install and launch the Ollama macOS app from
-[ollama.com/download](https://ollama.com/download). For this Intel Mac, Lucy is
-configured to use the faster Qwen3 0.6B model; it needs about 522 MB of model
-storage. In a short conversational test on this Mac, Lucy replied in about 10
-seconds with Qwen3 0.6B versus 24 seconds with Qwen3 1.7B. The smaller model is
-less capable; use Qwen3 1.7B instead if you prefer its answer quality.
+[ollama.com/download](https://ollama.com/download). Lucy can use two small,
+specialized local models: Qwen3 0.6B (about 523 MB) for general conversation and
+Qwen2.5-Coder 0.5B (about 397 MB) for coding explanations. Each is below
+600 MB. When both are installed, Lucy routes coding questions to the coder
+model if no project workspace is enabled. When `LUCY_CODE_DIR` is enabled, Lucy
+keeps the tool-capable Qwen3 model for project work. If the workspace is not
+enabled, Lucy can explain or draft code but cannot inspect or edit project files.
 
 ```sh
 ollama pull qwen3:0.6b
+ollama pull qwen2.5-coder:0.5b
 LUCY_API_BASE_URL=http://localhost:11434/v1 \
 LUCY_API_MODEL=qwen3:0.6b \
+LUCY_CODING_API_MODEL=qwen2.5-coder:0.5b \
 python main.py
 ```
 
-For faster replies, Lucy disables Qwen3's separate reasoning output when using
-Ollama on this Mac. To use the larger model, change both `qwen3:0.6b` values
-above to `qwen3:1.7b` (download it first with `ollama pull qwen3:1.7b`).
+For quick factual and conversational replies, Lucy disables Qwen3's separate
+reasoning output. On longer or more complex prompts, including coding work in a
+configured workspace, she enables it. Reasoning may take longer on a CPU-only
+computer. Common identity and date/time questions are answered directly by
+Lucy, not guessed by a model.
 
 Ollama must be running while Lucy is in use. With the auto-detected model,
 conversation requests stay on the local machine. The model can choose from
@@ -67,8 +77,10 @@ recall. It cannot execute shell commands or arbitrary code. Lucy only saves a
 new fact when you explicitly ask it to remember or save it. `/clear` clears
 conversation history but keeps saved facts.
 
-You can omit `ollama pull` after the model has been downloaded. Set the two
+You can omit `ollama pull` after the models have been downloaded. Set the
 `LUCY_API_*` variables again in each new terminal session where you run Lucy.
+If `LUCY_API_BASE_URL` points to local Ollama and `LUCY_CODING_API_MODEL` is
+omitted, Lucy detects the installed Qwen2.5-Coder model automatically.
 
 Other OpenAI-compatible services can be configured the same way:
 
@@ -175,6 +187,18 @@ common credential-named files, and non-text formats are blocked. Lucy does not
 execute or modify learned files. Learned copies are stored in
 `data/lucy_learned.json`; `/forget-file notes.md` removes Lucy's saved copy.
 
+### Supplied research reference
+
+Lucy also loads `data/supplied_research_knowledge.json` as a local reference.
+It includes the supplied emotion vocabulary and concise descriptions of the
+image-triplet dataset and fMRI checkpoint. Ask Lucy a normal question about an
+emotion or research artifact to retrieve related material; `/search` is
+reserved for Wikipedia. This improves retrieval; it does not fine-tune the
+language model. The image-triplet records are visual
+similarity choices rather than emotion labels, and the fMRI checkpoint is a
+specialized research model rather than a chat model. Participant-level records
+and identifiers are not included in Lucy's reference.
+
 ### Coding and improving Lucy
 
 To enable project coding, point Lucy at exactly one source folder. For Lucy's
@@ -201,6 +225,12 @@ Lucy can check Python syntax without running the code. It does not execute
 generated code, run arbitrary terminal commands, or run test suites on its own:
 those actions could modify files, access credentials, or contact services.
 Review and test approved code yourself.
+
+For a natural-language request such as “analyze main.py,” Lucy reads only the
+explicitly selected file. For Python files she also reports a static,
+non-executing outline of imports, top-level definitions, and a direct script
+entry point. A configured model may add interpretation, but the outline remains
+available if the model returns a generic or empty answer.
 
 Use `/feedback <correction or preference>` or `/remember <fact>` to help Lucy
 adapt future responses. These notes persist locally; this is explicit memory,
