@@ -3,30 +3,6 @@
   "history": [
     {
       "role": "user",
-      "content": "name"
-    },
-    {
-      "role": "assistant",
-      "content": "Merb: Merb is a discontinued model–view–controller web framework in Ruby, notable as a precursor to Rails 3. It brought increased focus on speed and modularity to Rails 3.[4][5] The name Merb is a contraction of \"Mongrel\" and \"Erb\".[6]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
-    },
-    {
-      "role": "user",
-      "content": "open outlook"
-    },
-    {
-      "role": "assistant",
-      "content": "Open-source: Open source is source code that is made freely available for possible modification and redistribution. Products include permission to use and view the source code,[1] design documents,[2] or content of the product. The open source model is a decentralized software development model that encourages open collaboration.[3][4]\nA main principle of open source software development is peer production, with products such as source code, blueprints, and documentation freely available to the public. The open source movement in software began as a response to the limitations of proprietary code. The model is used for projects such as in open source appropriate technology,[5] and open source drug discovery.[6][7]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
-    },
-    {
-      "role": "user",
-      "content": "hi"
-    },
-    {
-      "role": "assistant",
-      "content": "Hello! What would you like help with?"
-    },
-    {
-      "role": "user",
       "content": "how are you"
     },
     {
@@ -160,6 +136,30 @@
     {
       "role": "assistant",
       "content": "The supplied fMRI checkpoint refers to a research prediction model (FmriEncoder) with an eight-layer transformer architecture, designed to combine text, image, and video features for multimodal fMRI analysis. It trains on brain-response values and is a specialized multimodal model rather than a conversational language model. The details are provided in the research configuration."
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! What would you like help with?"
+    },
+    {
+      "role": "user",
+      "content": "what is sadness"
+    },
+    {
+      "role": "assistant",
+      "content": "\"Sadness\" refers to a feeling of sadness, longing, or emptiness. It's part of the Sad taxonomy, with synonyms like \"alone\" and \"forlorn.\" It's a natural part of human emotions and often tied to connection or longing for something."
+    },
+    {
+      "role": "user",
+      "content": "good job"
+    },
+    {
+      "role": "assistant",
+      "content": "Great job! How can I assist you today? 😊"
     }
   ]
 }

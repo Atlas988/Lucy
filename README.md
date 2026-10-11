@@ -199,6 +199,38 @@ similarity choices rather than emotion labels, and the fMRI checkpoint is a
 specialized research model rather than a chat model. Participant-level records
 and identifiers are not included in Lucy's reference.
 
+### Optional fMRI response model
+
+The supplied `best.ckpt` is a TRIBE v2 fMRI response encoder, not a chat model.
+Lucy can load it as an optional, separate model for predicting responses to a
+text, audio, or video stimulus. It does not decode thoughts, diagnose emotions,
+or replace Lucy's conversational model. Loading and inference require the
+matching `config.yaml`, the TRIBE v2 runtime, and its modality feature
+encoders. The checkpoint is large; allow several gigabytes of memory and
+additional storage for downloaded feature encoders.
+
+TRIBE v2 requires Python 3.11 or newer. In a separate virtual environment,
+install the optional runtime (licensed CC BY-NC 4.0; check those terms before
+use):
+
+```sh
+python3.11 -m venv .venv-brain
+source .venv-brain/bin/activate
+python -m pip install -r requirements-brain.txt
+LUCY_BRAIN_CHECKPOINT="$HOME/Downloads/best.ckpt" python main.py
+```
+
+By default Lucy looks for `config.yaml` beside the checkpoint and runs the
+model on CPU. Set `LUCY_BRAIN_CONFIG` to use a different config,
+`LUCY_BRAIN_CACHE` to choose the feature cache directory, or
+`LUCY_BRAIN_DEVICE` to choose another PyTorch device. Use `/brain` to confirm
+the model is loaded and `/brain-predict video /path/to/clip.mp4` (or `audio`
+or `text`) to request a prediction. Text prediction may use external speech
+services through the TRIBE runtime. Review that runtime's data handling and
+license before use. Lucy safely normalizes the supplied YAML config before
+passing it to the model loader; PyTorch checkpoint loading uses the
+weights-only mode.
+
 ### Coding and improving Lucy
 
 To enable project coding, point Lucy at exactly one source folder. For Lucy's

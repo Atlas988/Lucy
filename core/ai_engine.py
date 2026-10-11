@@ -11,6 +11,7 @@ from datetime import datetime
 from difflib import SequenceMatcher
 from pathlib import Path
 
+from core.brain_model import BrainResponseModel
 from core.coding_workspace import CodingWorkspace
 from core.computer_access import ComputerAccess
 
@@ -332,6 +333,10 @@ class Lucy:
         learned_path=None,
         code_directory=None,
         approval_callback=None,
+        brain_checkpoint_path=None,
+        brain_config_path=None,
+        brain_cache_path=None,
+        brain_device="cpu",
     ):
         self.memory_path = Path(memory_path or DEFAULT_MEMORY_PATH).expanduser()
         self.knowledge_path = Path(knowledge_path or DEFAULT_KNOWLEDGE_PATH)
@@ -354,6 +359,20 @@ class Lucy:
         )
         self.coding = CodingWorkspace(root_directory=code_directory)
         self.model = self._load_model(model_path) if model_path and not self.api_base_url else None
+        if brain_config_path and not brain_checkpoint_path:
+            raise ValueError(
+                "LUCY_BRAIN_CONFIG requires LUCY_BRAIN_CHECKPOINT."
+            )
+        self.brain_model = (
+            BrainResponseModel(
+                brain_checkpoint_path,
+                config_path=brain_config_path,
+                cache_path=brain_cache_path,
+                device=brain_device,
+            )
+            if brain_checkpoint_path
+            else None
+        )
 
     @classmethod
     def from_environment(cls, approval_callback=None):
@@ -404,6 +423,10 @@ class Lucy:
             learned_path=os.environ.get("LUCY_LEARNED_PATH") or None,
             code_directory=os.environ.get("LUCY_CODE_DIR") or None,
             approval_callback=approval_callback,
+            brain_checkpoint_path=os.environ.get("LUCY_BRAIN_CHECKPOINT") or None,
+            brain_config_path=os.environ.get("LUCY_BRAIN_CONFIG") or None,
+            brain_cache_path=os.environ.get("LUCY_BRAIN_CACHE") or None,
+            brain_device=os.environ.get("LUCY_BRAIN_DEVICE") or "cpu",
         )
 
     @staticmethod
@@ -1532,6 +1555,7 @@ class Lucy:
                 "/code-files [folder], /code-read <path>, /code-check <python-path>, "
                 "/code-delete <path>, /code-restore <path>, "
                 "/reflect, /coding [topic], /search <topic>, /calculate <expression>, "
+                "/brain, /brain-predict <text|audio|video> <path>, "
                 "/clear, /status, /help, /quit. "
                 "Use /feedback <correction> to teach me for this conversation; I'll ask "
                 "before saving it for future conversations."
@@ -1621,14 +1645,58 @@ class Lucy:
                 model_status = "GPT4All local model loaded"
             else:
                 model_status = "knowledge-only mode (no model configured)"
+            brain_status = (
+                "Brain-response model: loaded"
+                if self.brain_model is not None
+                else "Brain-response model: disabled"
+            )
             return (
                 f"Lucy is running; {model_status}. "
+                f"{brain_status}. "
                 f"Saved memories: {len(self.facts)}. "
                 f"Local knowledge entries: {len(self.knowledge)}. "
                 f"Coding reference entries: {len(self.coding_knowledge)}. "
                 f"Learned files: {len(self.computer.documents)}. "
                 f"File access: {'enabled' if self.computer.root else 'disabled'}. "
                 f"Coding workspace: {'enabled' if self.coding.root else 'disabled'}."
+            )
+        if lowered == "/brain":
+            if self.brain_model is None:
+                return (
+                    "No brain-response model is loaded. Set LUCY_BRAIN_CHECKPOINT to the "
+                    "local .ckpt path and place its matching config.yaml beside it, then "
+                    "restart Lucy. See the README for optional runtime setup."
+                )
+            return (
+                f"TRIBE brain-response model loaded from {self.brain_model.checkpoint_path} "
+                f"on {self.brain_model.device}. Use /brain-predict <text|audio|video> <path> "
+                "to predict fMRI responses. This predicts neural response patterns; it does "
+                "not read thoughts, diagnose emotions, or generate chat responses."
+            )
+        if lowered.startswith("/brain-predict "):
+            if self.brain_model is None:
+                return (
+                    "No brain-response model is loaded. Set LUCY_BRAIN_CHECKPOINT and restart Lucy."
+                )
+            request = text[len("/brain-predict "):].strip()
+            modality, separator, path = request.partition(" ")
+            if not separator or not path.strip():
+                return "Use /brain-predict <text|audio|video> <path>."
+            try:
+                predictions, segments = self.brain_model.predict_file(
+                    path.strip(),
+                    modality.casefold(),
+                    verbose=False,
+                )
+            except (OSError, RuntimeError, ValueError) as error:
+                return f"Brain-response prediction failed: {error}"
+            shape = getattr(predictions, "shape", None)
+            if shape is None:
+                raise RuntimeError("The brain model returned predictions without a shape.")
+            return (
+                f"Predicted fMRI responses for {len(segments)} segment(s); "
+                f"prediction array shape: {tuple(shape)}. These are model predictions, "
+                "not decoded thoughts or emotion labels."
             )
         if lowered.startswith("/files"):
             folder = text[len("/files"):].strip()
