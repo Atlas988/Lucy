@@ -1,8 +1,10 @@
 import json
+import io
 import os
 import subprocess
 import sys
 import tempfile
+import types
 import urllib.error
 import unittest
 from pathlib import Path
@@ -12,6 +14,7 @@ from core.audio import VoiceOutput
 from core.coding_workspace import CodingWorkspace
 from core.computer_access import ComputerAccess
 from core.ai_engine import Lucy
+import main as lucy_main
 
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -42,6 +45,14 @@ class LucyTests(unittest.TestCase):
 
     def test_simple_conversation_and_help(self):
         self.assertIn("Hello", self.lucy.respond("hello"))
+        self.assertEqual(
+            "I'm ready to help. What would you like to work on?",
+            self.lucy.respond("how are you?"),
+        )
+        self.assertEqual(
+            "Good morning! What would you like to talk about?",
+            self.lucy.respond("good morning"),
+        )
         self.assertIn("/remember", self.lucy.respond("/help"))
         self.assertIn("knowledge-only mode", self.lucy.respond("/status"))
 
@@ -89,6 +100,75 @@ class LucyTests(unittest.TestCase):
 
         self.assertIn("qwen3", lucy.respond("what are you").casefold())
         self.assertIn("Ollama", lucy.respond("who are you?"))
+
+    def test_user_identity_is_recalled_from_the_current_conversation(self):
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="https://api.example.test/v1",
+            api_model="chat-model",
+        )
+
+        introduction = lucy.respond("Im aiden")
+        answer = lucy.respond("who am i")
+
+        self.assertIn("Aiden", introduction)
+        self.assertEqual("You told me your name is Aiden.", answer)
+        self.assertNotIn("Aiden", lucy.facts)
+
+    def test_identity_correction_does_not_repeat_an_incorrect_name(self):
+        self.lucy.respond("I'm Aiden")
+        self.assertEqual(
+            "Sorry, I misunderstood. What should I call you?",
+            self.lucy.respond("no"),
+        )
+        self.assertEqual(
+            "I don't know your name yet. What would you like me to call you?",
+            self.lucy.respond("who am i"),
+        )
+
+    def test_affirmations_are_handled_locally_instead_of_calling_offline_api(self):
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+        )
+        lucy.respond("Im aiden")
+        lucy.respond("who am i")
+
+        with patch(
+            "core.ai_engine.urllib.request.urlopen",
+            side_effect=urllib.error.URLError("Connection refused"),
+        ) as urlopen:
+            first = lucy.respond("yes")
+            second = lucy.respond("YEs")
+
+        self.assertIn("Got it, Aiden", first)
+        self.assertIn("Got it, Aiden", second)
+        self.assertIn("who am i", lucy.history[-6]["content"].casefold())
+        self.assertEqual("Aiden", lucy.user_name)
+        urlopen.assert_not_called()
+
+    def test_no_after_name_confirmation_does_not_drop_name(self):
+        self.lucy.respond("I'm Aiden")
+        self.lucy.respond("who am i")
+
+        response = self.lucy.respond("no")
+
+        self.assertEqual("Okay, thanks for letting me know.", response)
+        self.assertEqual("Aiden", self.lucy.user_name)
+
+    def test_name_detection_does_not_mistake_small_talk_for_a_name(self):
+        self.assertIsNone(Lucy._extract_user_name("I'm learning Python."))
+        self.assertIsNone(Lucy._extract_user_name("I am happy today."))
+        self.assertEqual("Ada Lovelace", Lucy._extract_user_name("My name is Ada Lovelace."))
+
+    def test_clearing_history_also_clears_unsaved_conversation_identity(self):
+        self.lucy.respond("I'm Aiden")
+        self.lucy.respond("/clear")
+
+        self.assertIn("don't know your name yet", self.lucy.respond("who am i"))
 
     def test_common_date_questions_return_the_current_local_date(self):
         with patch("core.ai_engine.datetime") as mock_datetime:
@@ -138,7 +218,7 @@ class LucyTests(unittest.TestCase):
         self.assertEqual("qwen2.5-coder:0.5b", lucy.coding_api_model)
         self.assertEqual(1, urlopen.call_count)
 
-    def test_environment_rejects_local_models_over_six_hundred_mb(self):
+    def test_environment_rejects_local_models_over_nine_hundred_mb(self):
         response = Mock()
         response.__enter__ = Mock(return_value=response)
         response.__exit__ = Mock(return_value=False)
@@ -156,7 +236,7 @@ class LucyTests(unittest.TestCase):
 
         with patch.dict(os.environ, environment), patch(
             "core.ai_engine.urllib.request.urlopen", return_value=response
-        ), self.assertRaisesRegex(RuntimeError, "exceeds Lucy's 600 MB model limit"):
+        ), self.assertRaisesRegex(RuntimeError, "exceeds Lucy's 900 MB model limit"):
             Lucy.from_environment()
 
     def test_environment_rejects_oversized_local_coding_model(self):
@@ -177,8 +257,31 @@ class LucyTests(unittest.TestCase):
 
         with patch.dict(os.environ, environment), patch(
             "core.ai_engine.urllib.request.urlopen", return_value=response
-        ), self.assertRaisesRegex(RuntimeError, "coding model .* exceeds Lucy's 600 MB model limit"):
+        ), self.assertRaisesRegex(RuntimeError, "coding model .* exceeds Lucy's 900 MB model limit"):
             Lucy.from_environment()
+
+    def test_environment_accepts_local_model_at_nine_hundred_mb(self):
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.read.return_value = json.dumps(
+            {"models": [{"name": "qwen3:1.5b", "size": 900_000_000}]}
+        ).encode("utf-8")
+        environment = {
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+            "LUCY_API_BASE_URL": "http://localhost:11434/v1",
+            "LUCY_API_MODEL": "qwen3:1.5b",
+            "LUCY_API_KEY": "",
+            "LUCY_CODING_API_MODEL": "",
+            "LUCY_MODEL_PATH": "",
+        }
+
+        with patch.dict(os.environ, environment), patch(
+            "core.ai_engine.urllib.request.urlopen", return_value=response
+        ):
+            lucy = Lucy.from_environment()
+
+        self.assertEqual("qwen3:1.5b", lucy.api_model)
 
     def test_environment_keeps_knowledge_only_when_ollama_is_unavailable(self):
         environment = {
@@ -197,6 +300,377 @@ class LucyTests(unittest.TestCase):
 
         self.assertFalse(lucy.api_base_url)
         self.assertIsNone(lucy.model)
+
+    def test_invalid_api_base_url_fails_during_startup(self):
+        for url in (
+            "file:///tmp/lucy",
+            "https://user:password@example.test/v1",
+            "https://api.example.test/v1?key=secret",
+            "https://api.example.test/v1#fragment",
+        ):
+            with self.subTest(url=url), self.assertRaisesRegex(
+                ValueError, "LUCY_API_BASE_URL"
+            ):
+                Lucy(
+                    memory_path=self.memory_path,
+                    knowledge_path=self.knowledge_path,
+                    api_base_url=url,
+                )
+
+    def test_api_timeout_must_be_within_supported_range(self):
+        with self.assertRaisesRegex(ValueError, "between 1 and 600"):
+            Lucy(
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+                api_timeout=0,
+            )
+
+        with patch.dict(os.environ, {"LUCY_API_TIMEOUT": "not-a-number"}):
+            with self.assertRaisesRegex(ValueError, "LUCY_API_TIMEOUT must be a number"):
+                Lucy._api_timeout_from_environment()
+
+    def test_local_model_context_length_is_validated(self):
+        with patch.dict(os.environ, {"LUCY_MODEL_CONTEXT": "not-a-number"}):
+            with self.assertRaisesRegex(ValueError, "LUCY_MODEL_CONTEXT must be an integer"):
+                Lucy._model_context_length()
+
+        with patch.dict(os.environ, {"LUCY_MODEL_CONTEXT": "4096"}):
+            self.assertEqual(4096, Lucy._model_context_length())
+
+    def test_llama_cpp_backend_loads_local_gguf_without_probing_ollama(self):
+        model_path = self.root / "local.gguf"
+        model_path.write_bytes(b"small test model")
+        generated = []
+
+        class FakeLlama:
+            def __init__(self, **kwargs):
+                self.options = kwargs
+
+            def create_chat_completion(self, **kwargs):
+                generated.append(kwargs)
+                return {
+                    "choices": [
+                        {"message": {"content": "The local model is working."}}
+                    ]
+                }
+
+        llama_module = types.ModuleType("llama_cpp")
+        llama_module.Llama = FakeLlama
+        environment = {
+            "LUCY_MODEL_PATH": str(model_path),
+            "LUCY_MODEL_BACKEND": "llama-cpp",
+            "LUCY_API_BASE_URL": "",
+            "LUCY_API_KEY": "",
+            "LUCY_API_MODEL": "",
+            "LUCY_CODING_API_MODEL": "",
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+        }
+
+        with patch.dict(os.environ, environment), patch.dict(
+            sys.modules, {"llama_cpp": llama_module}
+        ), patch.object(
+            Lucy,
+            "_available_local_backends",
+            return_value={"llama-cpp": True, "gpt4all": False},
+        ), patch("core.ai_engine.urllib.request.urlopen") as urlopen:
+            lucy = Lucy.from_environment()
+            response = lucy.respond("Tell me a short story.")
+
+        self.assertEqual("llama-cpp", lucy.model_backend)
+        self.assertIn("llama.cpp local model loaded", lucy.respond("/status"))
+        self.assertEqual("The local model is working.", response)
+        self.assertEqual(str(model_path), lucy.model.options["model_path"])
+        self.assertEqual(4096, lucy.model.options["n_ctx"])
+        self.assertEqual([], urlopen.call_args_list)
+        self.assertEqual("user", generated[0]["messages"][-1]["role"])
+        self.assertEqual("Tell me a short story.", generated[0]["messages"][-1]["content"])
+
+    def test_llama_cpp_backend_reuses_recent_dialogue_for_followups(self):
+        model_path = self.root / "local.gguf"
+        model_path.write_bytes(b"small test model")
+        requests = []
+
+        class FakeLlama:
+            def __init__(self, **kwargs):
+                pass
+
+            def create_chat_completion(self, **kwargs):
+                requests.append(kwargs)
+                content = "A fox visited a garden." if len(requests) == 1 else "I told you about a fox."
+                return {"choices": [{"message": {"content": content}}]}
+
+        llama_module = types.ModuleType("llama_cpp")
+        llama_module.Llama = FakeLlama
+        with patch.dict(sys.modules, {"llama_cpp": llama_module}), patch.object(
+            Lucy,
+            "_available_local_backends",
+            return_value={"llama-cpp": True, "gpt4all": False},
+        ):
+            lucy = Lucy(
+                model_path=model_path,
+                model_backend="llama-cpp",
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+            )
+            first = lucy.respond("Tell me a story about a fox.")
+            second = lucy.respond("What did you tell me about?")
+
+        self.assertIn("fox", first)
+        self.assertIn("fox", second)
+        self.assertEqual("Tell me a story about a fox.", requests[1]["messages"][-3]["content"])
+        self.assertEqual("A fox visited a garden.", requests[1]["messages"][-2]["content"])
+
+    def test_llama_cpp_chat_model_can_use_lucys_restricted_calculator_tool(self):
+        model_path = self.root / "local.gguf"
+        model_path.write_bytes(b"small test model")
+        requests = []
+
+        class FakeLlama:
+            def __init__(self, **kwargs):
+                pass
+
+            def create_chat_completion(self, **kwargs):
+                requests.append(kwargs)
+                if len(requests) == 1:
+                    return {
+                        "choices": [
+                            {
+                                "message": {
+                                    "role": "assistant",
+                                    "tool_calls": [
+                                        LucyTests._calculate_tool_call(
+                                            "local-calc", "6 * 7"
+                                        )
+                                    ],
+                                }
+                            }
+                        ]
+                    }
+                return {
+                    "choices": [
+                        {"message": {"content": "6 times 7 is 42."}}
+                    ]
+                }
+
+        llama_module = types.ModuleType("llama_cpp")
+        llama_module.Llama = FakeLlama
+        with patch.dict(sys.modules, {"llama_cpp": llama_module}), patch.object(
+            Lucy,
+            "_available_local_backends",
+            return_value={"llama-cpp": True, "gpt4all": False},
+        ), patch("core.ai_engine.urllib.request.urlopen") as urlopen:
+            lucy = Lucy(
+                model_path=model_path,
+                model_backend="llama-cpp",
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+            )
+            answer = lucy.respond("What is 6 times 7?")
+
+        self.assertEqual("6 times 7 is 42.", answer)
+        self.assertIn("tools", requests[0])
+        self.assertEqual("tool", requests[1]["messages"][-1]["role"])
+        self.assertEqual("42", requests[1]["messages"][-1]["content"])
+        urlopen.assert_not_called()
+
+    def test_macos_prefers_llama_cpp_when_both_local_runtimes_are_available(self):
+        model_path = self.root / "local.gguf"
+        model_path.write_bytes(b"small test model")
+
+        class FakeLlama:
+            def __init__(self, **kwargs):
+                self.options = kwargs
+
+        llama_module = types.ModuleType("llama_cpp")
+        llama_module.Llama = FakeLlama
+        with patch.dict(sys.modules, {"llama_cpp": llama_module}), patch.object(
+            Lucy,
+            "_available_local_backends",
+            return_value={"llama-cpp": True, "gpt4all": True},
+        ), patch("core.ai_engine.os.sys.platform", "darwin"):
+            lucy = Lucy(
+                model_path=model_path,
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+            )
+
+        self.assertEqual("llama-cpp", lucy.model_backend)
+
+    def test_gpt4all_backend_remains_available_for_local_gguf_models(self):
+        model_path = self.root / "local.gguf"
+        model_path.write_bytes(b"small test model")
+
+        class FakeGPT4All:
+            def __init__(self, **kwargs):
+                self.options = kwargs
+
+            def generate(self, prompt, max_tokens, temp):
+                return "The GPT4All local model is working."
+
+        gpt4all_module = types.ModuleType("gpt4all")
+        gpt4all_module.GPT4All = FakeGPT4All
+        with patch.dict(sys.modules, {"gpt4all": gpt4all_module}), patch.object(
+            Lucy,
+            "_available_local_backends",
+            return_value={"llama-cpp": False, "gpt4all": True},
+        ):
+            lucy = Lucy(
+                model_path=model_path,
+                model_backend="gpt4all",
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+            )
+            answer = lucy.respond("Tell me something interesting.")
+
+        self.assertEqual("gpt4all", lucy.model_backend)
+        self.assertEqual("The GPT4All local model is working.", answer)
+        self.assertIn("GPT4All local model loaded", lucy.respond("/status"))
+
+    def test_explicit_model_backend_requires_model_path(self):
+        with self.assertRaisesRegex(ValueError, "requires LUCY_MODEL_PATH"):
+            Lucy(
+                model_backend="llama-cpp",
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+            )
+
+    def test_api_timeout_environment_setting_is_applied(self):
+        environment = {
+            "LUCY_MEMORY_PATH": str(self.memory_path),
+            "LUCY_API_BASE_URL": "https://api.example.test/v1",
+            "LUCY_API_KEY": "",
+            "LUCY_API_MODEL": "small-chat-model",
+            "LUCY_CODING_API_MODEL": "",
+            "LUCY_MODEL_PATH": "",
+            "LUCY_API_TIMEOUT": "9.5",
+        }
+        with patch.dict(os.environ, environment):
+            lucy = Lucy.from_environment()
+
+        self.assertEqual(9.5, lucy.api_timeout)
+        self.assertIn("9.5s timeout", lucy.respond("/status"))
+
+    def test_api_uses_configured_timeout_and_retries_transient_read_only_failure(self):
+        lucy = self.make_api_lucy(api_timeout=7)
+        response = self.fake_chat_response(
+            {"role": "assistant", "content": "It recovered."}
+        )
+        timeouts = []
+
+        def fail_then_recover(request, timeout):
+            timeouts.append(timeout)
+            if len(timeouts) == 1:
+                raise urllib.error.URLError("temporary network failure")
+            return response
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fail_then_recover), patch(
+            "core.ai_engine.time.sleep"
+        ) as sleep:
+            message = lucy._api_request(
+                [{"role": "user", "content": "hello"}],
+                include_tools=False,
+            )
+
+        self.assertEqual("It recovered.", message["content"])
+        self.assertEqual([7.0, 7.0], timeouts)
+        sleep.assert_called_once()
+
+    def test_api_does_not_retry_requests_that_include_tools(self):
+        lucy = self.make_api_lucy()
+        with patch(
+            "core.ai_engine.urllib.request.urlopen",
+            side_effect=urllib.error.URLError("offline"),
+        ) as urlopen, patch("core.ai_engine.time.sleep") as sleep:
+            with self.assertRaisesRegex(RuntimeError, "Could not reach"):
+                lucy._api_request(
+                    [{"role": "user", "content": "hello"}],
+                    include_tools=True,
+                )
+
+        urlopen.assert_called_once()
+        sleep.assert_not_called()
+
+    def test_api_rejects_oversized_response(self):
+        lucy = self.make_api_lucy()
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.read.return_value = b"x" * (4 * 1024 * 1024 + 1)
+
+        with patch("core.ai_engine.urllib.request.urlopen", return_value=response):
+            with self.assertRaisesRegex(RuntimeError, "exceeded Lucy's 4 MB limit"):
+                lucy._api_request(
+                    [{"role": "user", "content": "hello"}],
+                    include_tools=False,
+                )
+
+    def test_api_rejects_unsupported_response_structure(self):
+        lucy = self.make_api_lucy()
+        response = Mock()
+        response.__enter__ = Mock(return_value=response)
+        response.__exit__ = Mock(return_value=False)
+        response.read.return_value = b'{"choices":[]}'
+
+        with patch("core.ai_engine.urllib.request.urlopen", return_value=response):
+            with self.assertRaisesRegex(RuntimeError, "unsupported response"):
+                lucy._api_request(
+                    [{"role": "user", "content": "hello"}],
+                    include_tools=False,
+                )
+
+    def test_corrupt_memory_is_reported_without_overwriting_source(self):
+        self.memory_path.write_text("{broken", encoding="utf-8")
+
+        with self.assertRaisesRegex(ValueError, "invalid JSON and was left unchanged"):
+            Lucy(
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+            )
+
+        self.assertEqual("{broken", self.memory_path.read_text(encoding="utf-8"))
+
+    def test_memory_save_failure_is_reported_and_rolls_back_session_state(self):
+        self.lucy.respond("hello")
+        previous_history = self.lucy.history.copy()
+        self.lucy._save_memory = Mock(side_effect=PermissionError("read-only"))
+
+        response = self.lucy.respond("how are you?")
+
+        self.assertIn("could not save this conversation", response)
+        self.assertIn("read-only", response)
+        self.assertEqual(previous_history, self.lucy.history)
+
+    def test_failed_clear_keeps_previous_history(self):
+        self.lucy.respond("hello")
+        previous_history = self.lucy.history.copy()
+        self.lucy._save_memory = Mock(side_effect=PermissionError("read-only"))
+
+        response = self.lucy.respond("/clear")
+
+        self.assertIn("couldn't clear the saved conversation", response)
+        self.assertEqual(previous_history, self.lucy.history)
+
+    def test_cli_stays_running_after_a_conversation_backend_error(self):
+        lucy = Mock()
+        lucy.model = None
+        lucy.api_base_url = "http://localhost:11434/v1"
+        lucy.respond.side_effect = [RuntimeError("temporary outage"), "I recovered."]
+        output = io.StringIO()
+        errors = io.StringIO()
+
+        with patch("main.Lucy.from_environment", return_value=lucy), patch(
+            "builtins.input",
+            side_effect=["first message", "try again", "/quit"],
+        ), patch.dict(os.environ, {"LUCY_VOICE": ""}), patch(
+            "sys.stdout", output
+        ), patch("sys.stderr", errors):
+            result = lucy_main.main()
+
+        self.assertEqual(0, result)
+        self.assertIn("Lucy: I recovered.", output.getvalue())
+        self.assertIn("temporary outage", output.getvalue())
+        self.assertEqual("", errors.getvalue())
+        self.assertEqual(2, lucy.respond.call_count)
 
     def test_remembered_facts_persist_between_instances(self):
         self.assertEqual("I'll remember that.", self.lucy.respond("/remember I like tea"))
@@ -669,8 +1143,110 @@ class LucyTests(unittest.TestCase):
             lucy.respond("How is it typed?")
 
         second_turn = json.loads(requests[1].data.decode("utf-8"))["messages"]
+        self.assertIn("conversational assistant", second_turn[0]["content"])
+        self.assertIn("use prior turns to understand follow-up questions", second_turn[0]["content"])
         self.assertEqual("Explain Python.", second_turn[-3]["content"])
         self.assertEqual("Python is a language.", second_turn[-2]["content"])
+
+    @staticmethod
+    def _calculate_tool_call(call_id, expression):
+        return {
+            "id": call_id,
+            "type": "function",
+            "function": {
+                "name": "calculate",
+                "arguments": json.dumps({"expression": expression}),
+            },
+        }
+
+    def test_repeated_identical_tool_request_is_stopped_before_second_execution(self):
+        lucy = self.make_api_lucy()
+        repeated_call = self._calculate_tool_call("call-1", "2 + 2")
+        responses = [
+            self.fake_chat_response({"role": "assistant", "tool_calls": [repeated_call]}),
+            self.fake_chat_response(
+                {
+                    "role": "assistant",
+                    "tool_calls": [self._calculate_tool_call("call-2", "2 + 2")],
+                }
+            ),
+        ]
+
+        with patch(
+            "core.ai_engine.urllib.request.urlopen",
+            side_effect=lambda request, timeout: responses.pop(0),
+        ), patch.object(lucy, "_run_tool", return_value="4") as run_tool:
+            with self.assertRaisesRegex(RuntimeError, "repeated the 'calculate' tool request"):
+                lucy._api_response("What is 2 + 2?")
+
+        run_tool.assert_called_once_with("calculate", {"expression": "2 + 2"})
+
+    def test_excessive_tool_batch_is_rejected_before_any_tool_runs(self):
+        lucy = self.make_api_lucy()
+        calls = [
+            self._calculate_tool_call(f"call-{index}", str(index))
+            for index in range(7)
+        ]
+        response = self.fake_chat_response({"role": "assistant", "tool_calls": calls})
+
+        with patch("core.ai_engine.urllib.request.urlopen", return_value=response), patch.object(
+            lucy, "_run_tool"
+        ) as run_tool:
+            with self.assertRaisesRegex(RuntimeError, "per-turn limit of 6"):
+                lucy._api_response("Calculate several values.")
+
+        run_tool.assert_not_called()
+
+    def test_model_can_use_bounded_tool_rounds_and_return_final_response(self):
+        lucy = self.make_api_lucy()
+        responses = [
+            self.fake_chat_response(
+                {
+                    "role": "assistant",
+                    "tool_calls": [
+                        self._calculate_tool_call(f"call-{index}", str(index))
+                    ],
+                }
+            )
+            for index in range(5)
+        ]
+        responses.append(
+            self.fake_chat_response(
+                {"role": "assistant", "content": "I calculated all five values."}
+            )
+        )
+
+        with patch(
+            "core.ai_engine.urllib.request.urlopen",
+            side_effect=lambda request, timeout: responses.pop(0),
+        ) as urlopen:
+            answer = lucy._api_response("Calculate five values.")
+
+        self.assertEqual("I calculated all five values.", answer)
+        self.assertEqual(6, urlopen.call_count)
+
+    def test_tool_loop_stops_before_executing_a_sixth_tool_round(self):
+        lucy = self.make_api_lucy()
+        responses = [
+            self.fake_chat_response(
+                {
+                    "role": "assistant",
+                    "tool_calls": [
+                        self._calculate_tool_call(f"call-{index}", str(index))
+                    ],
+                }
+            )
+            for index in range(6)
+        ]
+
+        with patch(
+            "core.ai_engine.urllib.request.urlopen",
+            side_effect=lambda request, timeout: responses.pop(0),
+        ), patch.object(lucy, "_run_tool", return_value="calculated") as run_tool:
+            with self.assertRaisesRegex(RuntimeError, "within Lucy's 5-round tool limit"):
+                lucy._api_response("Calculate values.")
+
+        self.assertEqual(5, run_tool.call_count)
 
     def test_reflection_requires_language_model_and_conversation(self):
         self.assertIn("no conversation", self.lucy.respond("/reflect"))
@@ -782,6 +1358,26 @@ class LucyTests(unittest.TestCase):
         link.symlink_to(outside)
         with self.assertRaises(ValueError):
             access.learn_file("linked.txt")
+
+    def test_failed_learned_library_save_rolls_back_in_memory_changes(self):
+        source = self.root / "learning"
+        source.mkdir()
+        (source / "notes.md").write_text("A durable note.", encoding="utf-8")
+        access = ComputerAccess(
+            root_directory=source,
+            library_path=self.root / "learned.json",
+        )
+
+        with patch.object(access, "_save_library", side_effect=OSError("read-only")):
+            with self.assertRaisesRegex(OSError, "read-only"):
+                access.learn_file("notes.md")
+        self.assertNotIn("notes.md", access.documents)
+
+        access.documents["notes.md"] = {"text": "saved note", "digest": "digest"}
+        with patch.object(access, "_save_library", side_effect=OSError("read-only")):
+            with self.assertRaisesRegex(OSError, "read-only"):
+                access.forget_file("notes.md")
+        self.assertIn("notes.md", access.documents)
 
     def test_model_file_learning_requires_an_explicit_user_request(self):
         source = self.root / "learning"
@@ -1057,6 +1653,18 @@ class LucyTests(unittest.TestCase):
         with self.assertRaises(FileNotFoundError):
             Lucy(
                 model_path=self.root / "missing.gguf",
+                memory_path=self.memory_path,
+                knowledge_path=self.knowledge_path,
+            )
+
+    def test_gpt4all_model_larger_than_nine_hundred_mb_is_rejected(self):
+        model_path = self.root / "oversized.gguf"
+        with model_path.open("wb") as model_file:
+            model_file.truncate(900_000_001)
+
+        with self.assertRaisesRegex(ValueError, "exceeds Lucy's 900 MB model limit"):
+            Lucy(
+                model_path=model_path,
                 memory_path=self.memory_path,
                 knowledge_path=self.knowledge_path,
             )

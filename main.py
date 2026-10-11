@@ -42,10 +42,11 @@ def main():
 
     if lucy.model is None and not lucy.api_base_url:
         print(
-            "Lucy is running in knowledge-only mode. Configure GPT4All with "
-            "LUCY_MODEL_PATH or an OpenAI-compatible model with LUCY_API_BASE_URL "
-            "for generated conversations. A running Ollama installation with "
-            "Qwen3 0.6B or 1.7B is detected automatically."
+            "Lucy is running in knowledge-only mode. To generate conversations "
+            "without Ollama, set LUCY_MODEL_PATH to a local GGUF model and install "
+            "GPT4All or llama-cpp-python. You can also configure an "
+            "OpenAI-compatible API with LUCY_API_BASE_URL; Lucy optionally detects "
+            "supported models in a running Ollama server."
         )
 
     greeting = "Hello! Type /help to see what I can do, or /quit to exit."
@@ -68,8 +69,8 @@ def main():
         try:
             response = lucy.respond(user_input)
         except (OSError, RuntimeError, ValueError) as error:
-            print(f"Lucy encountered an error: {error}", file=sys.stderr)
-            return 1
+            print(f"Lucy: I couldn't complete that request: {error}")
+            continue
         print(f"Lucy: {response}")
         voice = speak_if_enabled(voice, response)
 

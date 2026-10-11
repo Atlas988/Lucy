@@ -38,21 +38,49 @@ LUCY_VOICE=1 python main.py
 Lucy runs in knowledge-only mode without extra packages or a model. In that
 mode, it answers simple built-in questions and questions covered by the local
 knowledge base; it does not pretend to generate answers to other questions.
-When started without model settings, Lucy detects a running local Ollama server
-if it has a supported model installed. Lucy selects the Qwen3 0.6B general
-model and, when available, Qwen2.5-Coder 0.5B for coding questions. Each model
-Lucy selects automatically is limited to 600 MB.
+Lucy can run a GGUF chat model directly on the computer through GPT4All or
+llama.cpp; an Ollama server is optional. Lucy's local-model size limit is
+900 MB per model, including GPT4All files.
+
+### Run a local model directly (no Ollama)
+
+Download a compatible `.gguf` model and install either local runtime. For
+llama.cpp on Apple Silicon, enable Metal acceleration during installation:
+
+```sh
+cd /path/to/Lucy
+source .venv/bin/activate
+CMAKE_ARGS="-DGGML_METAL=on" python -m pip install -r requirements-llama-cpp.txt
+export LUCY_MODEL_PATH="$HOME/Models/model.gguf"
+export LUCY_MODEL_BACKEND=llama-cpp
+python main.py
+```
+
+On Intel Macs, install the same pinned runtime without `CMAKE_ARGS` to use CPU
+inference. `llama-cpp-python` loads GGUF files directly and does not start or
+connect to Ollama. Set `LUCY_MODEL_CONTEXT` to choose a context size from 512
+to 32,768 tokens (default 4,096); a larger context needs more memory. Set the
+backend to `auto` to prefer llama.cpp on macOS when installed, or `gpt4all` to
+select GPT4All explicitly.
+Lucy can send its restricted tool definitions to llama.cpp models that support
+function calling in their GGUF chat template. GPT4All still supports normal
+local chat without structured model tool calls; Lucy's explicit slash commands
+remain available either way.
 
 ## Generated conversations with Ollama
 
-Install and launch the Ollama macOS app from
+Ollama is an optional local-server backend. Install and launch the Ollama macOS app from
 [ollama.com/download](https://ollama.com/download). Lucy can use two small,
 specialized local models: Qwen3 0.6B (about 523 MB) for general conversation and
-Qwen2.5-Coder 0.5B (about 397 MB) for coding explanations. Each is below
-600 MB. When both are installed, Lucy routes coding questions to the coder
+Qwen2.5-Coder 0.5B (about 397 MB) for coding explanations. Both are below the
+900 MB per-model limit. When both are installed, Lucy routes coding questions to the coder
 model if no project workspace is enabled. When `LUCY_CODE_DIR` is enabled, Lucy
 keeps the tool-capable Qwen3 model for project work. If the workspace is not
 enabled, Lucy can explain or draft code but cannot inspect or edit project files.
+Lucy responds to greetings and follow-ups conversationally and carries recent
+turns into model requests. To prevent runaway tool loops, each turn is limited
+to five tool rounds and six tool calls total; a repeated identical tool request
+stops that turn before Lucy repeats the action.
 
 ```sh
 ollama pull qwen3:0.6b
@@ -69,7 +97,7 @@ configured workspace, she enables it. Reasoning may take longer on a CPU-only
 computer. Common identity and date/time questions are answered directly by
 Lucy, not guessed by a model.
 
-Ollama must be running while Lucy is in use. With the auto-detected model,
+When this backend is selected, Ollama must be running while Lucy is in use. With the auto-detected model,
 conversation requests stay on the local machine. The model can choose from
 Lucy's restricted tools:
 calculator, local knowledge search, Wikipedia summaries, and saved-memory
@@ -95,13 +123,25 @@ Only configure a provider you trust. When using a remote API, your conversation
 and relevant saved context are sent to that provider. Lucy uses the API key only
 for the request and does not write it to its memory file.
 
-To enable generated conversation, install GPT4All in the virtual environment:
+API configuration is checked at startup; malformed URLs and unsupported timeout
+values fail with a clear error. Lucy's `/status` reports the configured model,
+request timeout, and that API connectivity is checked when you send a request
+(it does not claim a remote service is reachable before contacting it). The
+default request timeout is 120 seconds; set `LUCY_API_TIMEOUT` to a value from
+1 through 600 to change it. Responses are limited to 4 MB. Transient network
+failures are retried once only for requests without tools, so tool-enabled
+requests cannot accidentally repeat an action. If a request still fails, Lucy
+reports the error and keeps the conversation open so you can retry.
+
+GPT4All is another direct local runtime and supports macOS as well as Windows
+and Linux; install it in the virtual environment:
 
 ```sh
 python -m pip install gpt4all
 ```
 
 Download a compatible `.gguf` model separately, then point Lucy at its file.
+Local model files larger than 900 MB are rejected.
 On macOS, use its full path in the environment variable:
 
 ```sh
@@ -109,8 +149,9 @@ export LUCY_MODEL_PATH="$HOME/Models/model.gguf"
 python main.py
 ```
 
-For generated chat and voice together, run `LUCY_VOICE=1 python main.py` after
-setting `LUCY_MODEL_PATH`. On Windows PowerShell, set the path with
+Use `LUCY_MODEL_BACKEND=gpt4all` to select it explicitly. For generated chat
+and voice together, run `LUCY_VOICE=1 python main.py` after setting
+`LUCY_MODEL_PATH`. On Windows PowerShell, set the path with
 `$env:LUCY_MODEL_PATH = "C:\path\to\model.gguf"` before running `python main.py`.
 Lucy loads only the specified local model and will not download one
 automatically.
@@ -143,6 +184,10 @@ automatically.
 
 Conversation history and saved facts are stored in `data/lucy_memory.json`.
 Set `LUCY_MEMORY_PATH` or `LUCY_KNOWLEDGE_PATH` to use different files.
+Memory and learned-file JSON are written to a temporary file and atomically
+replaced to protect existing data from interrupted writes. If a save fails,
+Lucy reports it instead of silently claiming the conversation or new memories
+were saved; corrupt memory files are left untouched and reported at startup.
 Use `/feedback <correction>` to teach Lucy during the current conversation.
 Lucy will ask before saving that correction as a preference for future chats;
 without approval it stays session-only and is cleared by `/clear`. When a

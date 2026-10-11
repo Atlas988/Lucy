@@ -14,6 +14,8 @@ import urllib.request
 import urllib.parse
 from pathlib import Path
 
+from core.persistence import write_json_atomically
+
 
 READABLE_SUFFIXES = {
     ".c", ".cc", ".cpp", ".css", ".csv", ".go", ".h", ".hpp", ".html",
@@ -122,10 +124,22 @@ class ComputerAccess:
         self.documents = self._load_library()
 
     def _load_library(self):
-        if self.library_path is None or not self.library_path.is_file():
+        if self.library_path is None:
             return {}
-        with self.library_path.open(encoding="utf-8") as file:
-            saved = json.load(file)
+        try:
+            with self.library_path.open(encoding="utf-8") as file:
+                saved = json.load(file)
+        except FileNotFoundError:
+            return {}
+        except (json.JSONDecodeError, UnicodeDecodeError) as error:
+            raise ValueError(
+                "Learned-file library contains invalid JSON and was left unchanged: "
+                f"{self.library_path}"
+            ) from error
+        except OSError as error:
+            raise OSError(
+                f"Could not read Lucy's learned-file library {self.library_path}: {error}"
+            ) from error
         if not isinstance(saved, dict):
             raise ValueError(f"Learned-file library must be a JSON object: {self.library_path}")
 
@@ -154,11 +168,7 @@ class ComputerAccess:
     def _save_library(self):
         if self.library_path is None:
             raise RuntimeError("The learned-file library is not configured.")
-        self.library_path.parent.mkdir(parents=True, exist_ok=True)
-        temporary_path = self.library_path.with_name(self.library_path.name + ".tmp")
-        with temporary_path.open("w", encoding="utf-8") as file:
-            json.dump(self.documents, file, ensure_ascii=False, indent=2)
-        temporary_path.replace(self.library_path)
+        write_json_atomically(self.library_path, self.documents)
 
     def _resolve_directory(self, relative_directory=""):
         if self.root is None:
@@ -262,16 +272,28 @@ class ComputerAccess:
         if stored_bytes + len(text.encode("utf-8")) > MAX_TOTAL_TEXT_BYTES:
             raise ValueError("The local learned-file library is full.")
 
+        previous_document = self.documents.get(relative_path)
         self.documents[relative_path] = {"text": text, "digest": digest}
-        self._save_library()
+        try:
+            self._save_library()
+        except OSError:
+            if previous_document is None:
+                del self.documents[relative_path]
+            else:
+                self.documents[relative_path] = previous_document
+            raise
         return f"I learned {relative_path} ({len(text)} characters)."
 
     def forget_file(self, relative_file):
         normalized = relative_file.replace("\\", "/").strip()
         if normalized not in self.documents:
             return f"I have not learned {normalized!r}."
-        del self.documents[normalized]
-        self._save_library()
+        document = self.documents.pop(normalized)
+        try:
+            self._save_library()
+        except OSError:
+            self.documents[normalized] = document
+            raise
         return f"I forgot the saved contents of {normalized}."
 
     def search_learned(self, query, limit=3):
