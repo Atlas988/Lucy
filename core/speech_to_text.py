@@ -1,9 +1,17 @@
 import queue
-import sounddevice as sd
-import vosk
 import json
 import sys
 import threading
+
+try:
+    import sounddevice as sd
+except Exception:  # pragma: no cover - optional dependency
+    sd = None
+
+try:
+    import vosk
+except Exception:  # pragma: no cover - optional dependency
+    vosk = None
 
 q = queue.Queue()
 
@@ -14,12 +22,20 @@ def audio_callback(indata, frames, time, status):
 
 class VoskRecognizer:
     def __init__(self, model_path="vosk-model-small-en-us-0.15"):
+        self.model = None
+        self.rec = None
+        self.running = False
+        self.listener_thread = None
+        if vosk is None or sd is None:
+            print("Vosk and sounddevice are not installed; speech recognition is unavailable.")
+            return
         print("Loading Vosk model...")
         self.model = vosk.Model(model_path)
         self.rec = vosk.KaldiRecognizer(self.model, 16000)
-        self.running = False
 
     def start_listening(self, on_result_callback):
+        if self.rec is None or sd is None:
+            return
         self.running = True
         def listen():
             with sd.RawInputStream(samplerate=16000, blocksize=8000, dtype='int16',
@@ -41,5 +57,5 @@ class VoskRecognizer:
 
     def stop_listening(self):
         self.running = False
-        if self.listener_thread.is_alive():
+        if self.listener_thread is not None and self.listener_thread.is_alive():
             self.listener_thread.join()

@@ -1,7 +1,16 @@
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+try:
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    import torch
+except Exception:  # pragma: no cover - optional dependency
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
+    torch = None
 
 def main():
+    if AutoTokenizer is None or AutoModelForCausalLM is None or torch is None:
+        print("StableLM dependencies are unavailable; nothing to run.")
+        return
+
     model_name = "stabilityai/stablelm-tuned-alpha-1b"
 
     print("Loading model and tokenizer...")

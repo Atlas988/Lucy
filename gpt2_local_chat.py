@@ -1,7 +1,12 @@
 # gpt2_local_chat.py
 
-from transformers import AutoModelForCausalLM, AutoTokenizer
-import torch
+try:
+    from transformers import AutoModelForCausalLM, AutoTokenizer
+    import torch
+except Exception:  # pragma: no cover - optional dependency
+    AutoModelForCausalLM = None
+    AutoTokenizer = None
+    torch = None
 import os
 
 # === CONFIGURATION ===
@@ -13,6 +18,8 @@ TEMPERATURE = 0.7
 
 # === STEP 1: Download and Save Locally (Run once) ===
 def download_and_save_model():
+    if AutoTokenizer is None or AutoModelForCausalLM is None:
+        raise RuntimeError("transformers is not installed")
     print("Downloading and saving GPT-2 to local directory...")
     tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
     model = AutoModelForCausalLM.from_pretrained(MODEL_NAME)
@@ -24,6 +31,8 @@ def download_and_save_model():
 
 # === STEP 2: Load Model from Local Directory ===
 def load_local_model():
+    if AutoTokenizer is None or AutoModelForCausalLM is None:
+        raise RuntimeError("transformers is not installed")
     print("Loading GPT-2 from local directory...")
     tokenizer = AutoTokenizer.from_pretrained(LOCAL_DIR)
     model = AutoModelForCausalLM.from_pretrained(LOCAL_DIR)
@@ -33,6 +42,8 @@ def load_local_model():
 
 # === STEP 3: Get Response from GPT-2 ===
 def get_response(prompt, tokenizer, model):
+    if tokenizer is None or model is None or torch is None:
+        return f"[offline fallback] {prompt.strip() or 'How can I help?'}"
     input_text = f"User: {prompt}\nAI:"
     inputs = tokenizer(input_text, return_tensors="pt")
 

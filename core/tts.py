@@ -1,14 +1,39 @@
-import edge_tts
+import subprocess
+import sys
+
+
+def _safe_optional_import(module_name):
+    try:
+        completed = subprocess.run(
+            [sys.executable, "-c", f"import {module_name}"],
+            stdout=subprocess.PIPE,
+            stderr=subprocess.PIPE,
+            text=True,
+            check=False,
+        )
+    except Exception:
+        return None
+    if completed.returncode != 0:
+        return None
+    try:
+        return __import__(module_name)
+    except Exception:
+        return None
+
+
+edge_tts = _safe_optional_import("edge_tts")
 import asyncio
-import pygame
+pygame = _safe_optional_import("pygame")
+
 import threading
 import uuid
 import os
 import queue
-import tkinter as tk
+try:
+    import tkinter as tk
+except Exception:  # pragma: no cover - optional dependency
+    tk = None
 import time
-
-pygame.mixer.init()
 
 # Thread-safe queue for status updates to GUI
 status_queue = queue.Queue()
@@ -17,6 +42,8 @@ def set_status(text, bg="green", fg="white"):
     status_queue.put((text, bg, fg))
 
 async def generate_speech(text, filename):
+    if edge_tts is None:
+        raise RuntimeError("edge_tts is not installed")
     set_status("Generating speech...", "blue", "white")
     communicator = edge_tts.Communicate(text, voice="en-US-MichelleNeural")
     await communicator.save(filename)
@@ -33,6 +60,9 @@ def safe_delete(filename, retries=5, delay=0.2):
             time.sleep(delay)
 
 def play_audio_nonblocking(filename):
+    if pygame is None:
+        return
+
     def _play():
         try:
             pygame.mixer.music.load(filename)
@@ -62,6 +92,8 @@ def speak(text):
     threading.Thread(target=run_tts, daemon=True).start()
 
 def gui_thread():
+    if tk is None:
+        return
     root = tk.Tk()
     root.title("Lucy Status")
     root.geometry("200x50")
@@ -82,8 +114,6 @@ def gui_thread():
     root.after(100, check_queue)
     root.mainloop()
 
-# Start GUI thread
-threading.Thread(target=gui_thread, daemon=True).start()
 
 # Example usage: Speak after 2 seconds delay
 if __name__ == "__main__":
