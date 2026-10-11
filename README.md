@@ -39,15 +39,23 @@ knowledge base; it does not pretend to generate answers to other questions.
 
 ## Generated conversations with Ollama
 
-For local model inference on macOS, install and launch Ollama, then download a
-model that supports tool calling (for example `qwen3:4b`):
+Install and launch the Ollama macOS app from
+[ollama.com/download](https://ollama.com/download). For this Intel Mac, Lucy is
+configured to use the faster Qwen3 0.6B model; it needs about 522 MB of model
+storage. In a short conversational test on this Mac, Lucy replied in about 10
+seconds with Qwen3 0.6B versus 24 seconds with Qwen3 1.7B. The smaller model is
+less capable; use Qwen3 1.7B instead if you prefer its answer quality.
 
 ```sh
-ollama pull qwen3:4b
+ollama pull qwen3:0.6b
 LUCY_API_BASE_URL=http://localhost:11434/v1 \
-LUCY_API_MODEL=qwen3:4b \
+LUCY_API_MODEL=qwen3:0.6b \
 python main.py
 ```
+
+For faster replies, Lucy disables Qwen3's separate reasoning output when using
+Ollama on this Mac. To use the larger model, change both `qwen3:0.6b` values
+above to `qwen3:1.7b` (download it first with `ollama pull qwen3:1.7b`).
 
 Ollama must be running while Lucy is in use. In this mode, conversation requests
 stay on the local machine. The model can choose from Lucy's restricted tools:
@@ -55,6 +63,9 @@ calculator, local knowledge search, Wikipedia summaries, and saved-memory
 recall. It cannot execute shell commands or arbitrary code. Lucy only saves a
 new fact when you explicitly ask it to remember or save it. `/clear` clears
 conversation history but keeps saved facts.
+
+You can omit `ollama pull` after the model has been downloaded. Set the two
+`LUCY_API_*` variables again in each new terminal session where you run Lucy.
 
 Other OpenAI-compatible services can be configured the same way:
 

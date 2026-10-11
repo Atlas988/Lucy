@@ -705,6 +705,14 @@ class Lucy:
             "temperature": 0.7,
             "max_tokens": 700,
         }
+        api_url = urllib.parse.urlsplit(self.api_base_url)
+        if (
+            api_url.scheme == "http"
+            and api_url.hostname in {"localhost", "127.0.0.1", "::1"}
+            and api_url.port == 11434
+            and self.api_model.split(":", 1)[0].casefold() == "qwen3"
+        ):
+            request_body["think"] = False
         if include_tools:
             request_body["tools"] = _TOOL_DEFINITIONS
             request_body["tool_choice"] = "auto"

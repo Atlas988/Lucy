@@ -238,6 +238,46 @@ class LucyTests(unittest.TestCase):
         self.assertEqual("tool", follow_up["messages"][-1]["role"])
         self.assertEqual("14", follow_up["messages"][-1]["content"])
 
+    def test_local_ollama_qwen3_disables_thinking(self):
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="http://localhost:11434/v1",
+            api_model="qwen3:0.6b",
+        )
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "Hello! How can I help?"}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+                lucy.respond("Tell me a short joke.")
+
+        self.assertIs(requests[0]["think"], False)
+
+    def test_non_ollama_api_does_not_receive_ollama_thinking_option(self):
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            api_base_url="https://api.example.test/v1",
+            api_model="qwen3:0.6b",
+        )
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "Hello! How can I help?"}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+                lucy.respond("Tell me a short joke.")
+
+        self.assertNotIn("think", requests[0])
+
     def test_model_cannot_save_memory_without_explicit_request(self):
         lucy = self.make_api_lucy()
         tool_call = {

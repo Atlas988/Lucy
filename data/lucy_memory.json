@@ -3,30 +3,6 @@
   "history": [
     {
       "role": "user",
-      "content": "hi"
-    },
-    {
-      "role": "assistant",
-      "content": "Hello! What would you like help with?"
-    },
-    {
-      "role": "user",
-      "content": "what can you do"
-    },
-    {
-      "role": "assistant",
-      "content": "I don't have a local model or a matching reference for that yet. Set LUCY_MODEL_PATH to a GPT4All .gguf model, use /search <topic> for Wikipedia, or ask /help for available commands."
-    },
-    {
-      "role": "user",
-      "content": "tell me a joke"
-    },
-    {
-      "role": "assistant",
-      "content": "Rocket: A rocket (from Italian: rocchetto, lit. ''bobbin/spool'', and so named for its shape)[nb 1][1] is a vehicle that uses jet propulsion to accelerate without using any surrounding air. A rocket engine produces thrust by reaction to exhaust expelled at high speed.[2] Rocket engines work entirely from propellant carried within the vehicle; therefore a rocket can fly in the vacuum of space. Rockets work more efficiently in a vacuum and incur a loss of thrust due to the opposing pressure of the atmosphere.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
-    },
-    {
-      "role": "user",
       "content": "whats the date"
     },
     {
@@ -160,6 +136,30 @@
     {
       "role": "assistant",
       "content": "Open-source: Open source is source code that is made freely available for possible modification and redistribution. Products include permission to use and view the source code,[1] design documents,[2] or content of the product. The open source model is a decentralized software development model that encourages open collaboration.[3][4]\nA main principle of open source software development is peer production, with products such as source code, blueprints, and documentation freely available to the public. The open source movement in software began as a response to the limitations of proprietary code. The model is used for projects such as in open source appropriate technology,[5] and open source drug discovery.[6][7]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! What would you like help with?"
+    },
+    {
+      "role": "user",
+      "content": "how are you"
+    },
+    {
+      "role": "assistant",
+      "content": "I'm ready to help. What would you like to work on?"
+    },
+    {
+      "role": "user",
+      "content": "what are you"
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have a local model or a matching reference for that yet. Set LUCY_MODEL_PATH to a GPT4All .gguf model, use /search <topic> for Wikipedia, or ask /help for available commands."
     }
   ]
 }
