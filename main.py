@@ -5,6 +5,16 @@ from core.audio import VoiceOutput
 from core.ai_engine import Lucy
 
 
+def confirm_computer_action(action):
+    print(f"\nLucy wants permission to {action}")
+    try:
+        answer = input("Allow this one action? [y/N]: ").strip().lower()
+    except (EOFError, KeyboardInterrupt):
+        print("\nLucy: Action cancelled.")
+        return False
+    return answer in ("y", "yes")
+
+
 def speak_if_enabled(voice, text):
     if voice is None:
         return None
@@ -18,7 +28,7 @@ def speak_if_enabled(voice, text):
 
 def main():
     try:
-        lucy = Lucy.from_environment()
+        lucy = Lucy.from_environment(approval_callback=confirm_computer_action)
     except (OSError, RuntimeError, ValueError) as error:
         print(f"Lucy could not start: {error}", file=sys.stderr)
         return 1
@@ -30,10 +40,11 @@ def main():
         except RuntimeError as error:
             print(f"Lucy voice output is unavailable: {error}", file=sys.stderr)
 
-    if lucy.model is None:
+    if lucy.model is None and not lucy.api_base_url:
         print(
-            "Lucy is running in local knowledge mode. Set LUCY_MODEL_PATH "
-            "to a GPT4All .gguf model for generated conversations."
+            "Lucy is running in knowledge-only mode. Configure GPT4All with "
+            "LUCY_MODEL_PATH or an OpenAI-compatible model with LUCY_API_BASE_URL "
+            "for generated conversations."
         )
 
     greeting = "Hello! Type /help to see what I can do, or /quit to exit."
