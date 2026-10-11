@@ -8,6 +8,7 @@ from pathlib import Path
 from unittest.mock import Mock, patch
 
 from core.audio import VoiceOutput
+from core.coding_workspace import CodingWorkspace
 from core.computer_access import ComputerAccess
 from core.ai_engine import Lucy
 
@@ -59,6 +60,46 @@ class LucyTests(unittest.TestCase):
         )
         self.assertEqual(["my favorite color is blue"], self.lucy.facts)
 
+    def test_feedback_persists_as_a_user_preference(self):
+        approvals = []
+        self.lucy.approval_callback = lambda action: approvals.append(action) or True
+        self.assertIn("remember it for future", self.lucy.respond("/feedback keep answers concise"))
+        self.assertIn("save this correction", approvals[0])
+        restarted_lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+        )
+        self.assertIn("User preference: keep answers concise", restarted_lucy.facts)
+        self.assertEqual([], restarted_lucy.history)
+
+    def test_feedback_without_approval_is_session_only_and_not_saved_to_history(self):
+        lucy = self.make_api_lucy(approval_callback=lambda action: False)
+
+        response = lucy.respond("/feedback correct me gently")
+
+        self.assertIn("this conversation only", response)
+        self.assertIn("User preference: correct me gently", lucy.session_lessons)
+        self.assertEqual([], lucy.facts)
+        self.assertEqual([], lucy.history)
+        self.assertNotIn("correct me gently", self.memory_path.read_text(encoding="utf-8"))
+
+    def test_model_receives_session_corrections_and_is_told_to_self_correct(self):
+        lucy = self.make_api_lucy(approval_callback=lambda action: False)
+        lucy.respond("/feedback explain mistakes briefly")
+        request_messages = []
+
+        def fake_urlopen(request, timeout):
+            request_messages.extend(json.loads(request.data.decode("utf-8"))["messages"])
+            return self.fake_chat_response({"role": "assistant", "content": "Understood."})
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            lucy.respond("What should you do if I correct you?")
+
+        system_message = request_messages[0]["content"]
+        self.assertIn("Current-conversation user corrections and preferences", system_message)
+        self.assertIn("explain mistakes briefly", system_message)
+        self.assertIn("reconsider your answer", system_message)
+
     def test_clear_only_removes_conversation_history(self):
         self.lucy.respond("/remember I like tea")
         self.lucy.respond("hello")
@@ -68,12 +109,45 @@ class LucyTests(unittest.TestCase):
 
         self.assertIn("cleared", response)
         self.assertEqual([], self.lucy.history)
+        self.assertEqual([], self.lucy.session_lessons)
         self.assertEqual(["I like tea"], self.lucy.facts)
 
     def test_local_knowledge_retrieval(self):
         response = self.lucy.respond("What is Python?")
         self.assertIn("Python is a high-level programming language.", response)
         self.assertIn("LUCY_MODEL_PATH", response)
+
+    def test_coding_reference_is_available_in_knowledge_mode(self):
+        topics = self.lucy.respond("/coding")
+        self.assertIn("Python programming", topics)
+        self.assertIn("Rust programming", topics)
+        self.assertIn("Application security basics", topics)
+
+        python_reference = self.lucy.respond("/coding Python")
+        self.assertIn("Python programming", python_reference)
+        self.assertIn("Never use eval on untrusted input", python_reference)
+
+    def test_coding_questions_prioritize_programming_reference(self):
+        response = self.lucy.respond("How should I write Python code?")
+        self.assertIn("Python programming", response)
+        self.assertIn("project-specific coding help", response)
+
+    def test_configured_model_receives_relevant_coding_reference_and_guidance(self):
+        lucy = self.make_api_lucy()
+        request_messages = []
+
+        def fake_urlopen(request, timeout):
+            request_messages.extend(json.loads(request.data.decode("utf-8"))["messages"])
+            return self.fake_chat_response(
+                {"role": "assistant", "content": "Use small, tested functions."}
+            )
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            lucy.respond("How should I write Python code?")
+
+        system_message = request_messages[0]["content"]
+        self.assertIn("Python programming", system_message)
+        self.assertIn("smallest complete change", system_message)
 
     def test_ai_alias_matches_artificial_intelligence_entry(self):
         self.knowledge_path.write_text(
@@ -210,6 +284,78 @@ class LucyTests(unittest.TestCase):
         second_turn = json.loads(requests[1].data.decode("utf-8"))["messages"]
         self.assertEqual("Explain Python.", second_turn[-3]["content"])
         self.assertEqual("Python is a language.", second_turn[-2]["content"])
+
+    def test_reflection_requires_language_model_and_conversation(self):
+        self.assertIn("no conversation", self.lucy.respond("/reflect"))
+        self.lucy.respond("hello")
+        self.assertIn("needs a configured language model", self.lucy.respond("/reflect"))
+
+    def test_reflection_proposes_lessons_and_saves_only_approved_items(self):
+        approvals = []
+        lucy = self.make_api_lucy(
+            approval_callback=lambda action: approvals.append(action) or "concise" in action
+        )
+        conversation = [
+            {"role": "user", "content": "Please keep answers concise."},
+            {"role": "assistant", "content": "Understood."},
+        ]
+        lucy.history = list(conversation)
+        responses = [
+            self.fake_chat_response(
+                {
+                    "role": "assistant",
+                    "content": json.dumps(
+                        {
+                            "lessons": [
+                                "Keep answers concise.",
+                                "Use examples when explaining code.",
+                            ]
+                        }
+                    ),
+                }
+            )
+        ]
+        requests = []
+
+        def fake_urlopen(request, timeout):
+            requests.append(json.loads(request.data.decode("utf-8")))
+            return responses.pop(0)
+
+        with patch("core.ai_engine.urllib.request.urlopen", side_effect=fake_urlopen):
+            result = lucy.respond("/reflect")
+
+        self.assertIn("Saved approved lessons", result)
+        self.assertIn("Not saved", result)
+        self.assertEqual(["User preference: Keep answers concise."], lucy.facts)
+        self.assertEqual(conversation, lucy.history)
+        self.assertEqual(2, len(approvals))
+        self.assertNotIn("tools", requests[0])
+        self.assertNotIn("tool_choice", requests[0])
+
+    def test_reflection_does_not_save_when_approval_is_unavailable(self):
+        lucy = self.make_api_lucy()
+        lucy.history = [{"role": "user", "content": "I like short answers."}]
+        response = self.fake_chat_response(
+            {
+                "role": "assistant",
+                "content": json.dumps({"lessons": ["Prefer short answers."]}),
+            }
+        )
+
+        with patch("core.ai_engine.urllib.request.urlopen", return_value=response):
+            result = lucy.respond("/reflect")
+
+        self.assertIn("approval was declined or unavailable", result)
+        self.assertEqual([], lucy.facts)
+
+    def test_reflection_rejects_invalid_model_output(self):
+        lucy = self.make_api_lucy()
+        lucy.history = [{"role": "user", "content": "Please explain gently."}]
+        response = self.fake_chat_response({"role": "assistant", "content": "not json"})
+
+        with patch("core.ai_engine.urllib.request.urlopen", return_value=response):
+            with self.assertRaisesRegex(RuntimeError, "invalid reflection JSON"):
+                lucy.respond("/reflect")
 
     def test_explicit_natural_memory_request_allows_memory_tool(self):
         self.assertTrue(Lucy._user_requested_memory("Please remember my name is Ada."))
@@ -351,6 +497,147 @@ class LucyTests(unittest.TestCase):
             return_value=[(None, None, None, None, ("10.0.0.5", 0))],
         ), self.assertRaises(ValueError):
             ComputerAccess._validate_public_url("https://example.com/")
+
+    def test_coding_workspace_supports_multiple_languages_and_requires_approval(self):
+        project = self.root / "project"
+        project.mkdir()
+        (project / "src").mkdir()
+        (project / "src" / "app.py").write_text("print('old')\n", encoding="utf-8")
+        workspace = CodingWorkspace(project)
+        previews = []
+
+        def approve(preview):
+            previews.append(preview)
+            return True
+
+        result = workspace.preview_and_write(
+            "src/app.py",
+            "print('new')\n",
+            approve,
+        )
+        self.assertIn("Applied your approved change", result)
+        self.assertIn("-print('old')", previews[0])
+        self.assertEqual("print('new')\n", workspace.read_file("src/app.py"))
+
+        result = workspace.preview_and_write(
+            "src/App.swift",
+            "print(\"hello\")\n",
+            approve,
+        )
+        self.assertIn("Applied your approved change", result)
+        self.assertEqual('print("hello")\n', workspace.read_file("src/App.swift"))
+
+    def test_coding_workspace_denies_writes_without_approval(self):
+        project = self.root / "project"
+        project.mkdir()
+        workspace = CodingWorkspace(project)
+
+        result = workspace.preview_and_write("new.py", "print('no')\n")
+
+        self.assertIn("was not applied", result)
+        self.assertFalse((project / "new.py").exists())
+
+    def test_coding_workspace_rejects_secrets_traversal_and_symlinks(self):
+        project = self.root / "project"
+        project.mkdir()
+        (project / "app.py").write_text("pass\n", encoding="utf-8")
+        outside = self.root / "outside.py"
+        outside.write_text("secret\n", encoding="utf-8")
+        (project / "linked.py").symlink_to(outside)
+        workspace = CodingWorkspace(project)
+
+        for path in ("../outside.py", ".env", "api_key.py", "linked.py"):
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                workspace.read_file(path)
+
+    def test_code_removal_is_approved_and_recoverable(self):
+        project = self.root / "project"
+        project.mkdir()
+        original = project / "old.py"
+        original.write_text("print('keep me')\n", encoding="utf-8")
+        workspace = CodingWorkspace(project)
+        previews = []
+
+        denied = workspace.delete_file("old.py", lambda preview: False)
+        self.assertIn("not approved", denied)
+        self.assertTrue(original.exists())
+
+        removed = workspace.delete_file(
+            "old.py",
+            lambda preview: previews.append(preview) or True,
+        )
+        self.assertIn("recoverable trash", removed)
+        self.assertFalse(original.exists())
+        self.assertIn("-print('keep me')", previews[0])
+
+        restored = workspace.restore_file("old.py", lambda preview: True)
+        self.assertIn("Restored", restored)
+        self.assertEqual("print('keep me')\n", original.read_text(encoding="utf-8"))
+
+    def test_python_check_does_not_execute_code_and_reports_syntax(self):
+        project = self.root / "project"
+        project.mkdir()
+        marker = self.root / "executed"
+        (project / "app.py").write_text(
+            f"from pathlib import Path\nPath({str(marker)!r}).touch()\n",
+            encoding="utf-8",
+        )
+        workspace = CodingWorkspace(project)
+        self.assertIn("syntax is valid", workspace.check_python_syntax("app.py"))
+        self.assertFalse(marker.exists())
+        (project / "broken.py").write_text("if:\n", encoding="utf-8")
+        self.assertIn("syntax error", workspace.check_python_syntax("broken.py"))
+
+    def test_model_project_change_requires_explicit_request_and_approval(self):
+        project = self.root / "project"
+        project.mkdir()
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            code_directory=project,
+        )
+        denied = lucy._run_tool(
+            "write_project_file",
+            {"path": "app.js", "content": "console.log('hello');\n"},
+        )
+        self.assertIn("explicitly asks", denied)
+
+        lucy._current_user_request = "Add a JavaScript file."
+        changed = lucy._run_tool(
+            "write_project_file",
+            {"path": "app.js", "content": "console.log('hello');\n"},
+        )
+        self.assertIn("was not applied", changed)
+        self.assertFalse((project / "app.js").exists())
+
+        lucy.approval_callback = lambda preview: True
+        changed = lucy._run_tool(
+            "write_project_file",
+            {"path": "app.js", "content": "console.log('hello');\n"},
+        )
+        self.assertIn("Applied your approved change", changed)
+        self.assertTrue((project / "app.js").exists())
+
+    def test_project_file_reads_require_user_request(self):
+        project = self.root / "project"
+        project.mkdir()
+        (project / "app.py").write_text("print('hello')\n", encoding="utf-8")
+        lucy = Lucy(
+            memory_path=self.memory_path,
+            knowledge_path=self.knowledge_path,
+            code_directory=project,
+        )
+
+        denied = lucy._run_tool("read_project_file", {"path": "app.py"})
+        self.assertIn("explicitly asks", denied)
+        lucy._current_user_request = "Please review app.py."
+        self.assertIn("print('hello')", lucy._run_tool("read_project_file", {"path": "app.py"}))
+
+    def test_explicit_coding_and_removal_requests_are_recognized(self):
+        self.assertTrue(Lucy._user_requested_coding("Add a Swift example."))
+        self.assertTrue(Lucy._user_requested_coding("Could you update the JavaScript app?"))
+        self.assertTrue(Lucy._user_requested_removal("Please delete the old module."))
+        self.assertFalse(Lucy._user_requested_removal("Could you review the old module?"))
 
     def test_optional_voice_output_uses_platform_speech_engine(self):
         engine = Mock()

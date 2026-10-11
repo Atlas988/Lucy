@@ -12,30 +12,11 @@ gTTS==2.5.1
 sounddevice==0.4.6
 vosk==0.3.45
 
-# Computer Vision
-opencv-python==4.9.0.80
-deepface==0.0.83
-numpy==1.26.4
-
 # Memory and Embeddings
 chromadb==0.4.24
-sentence-transformers==2.6.1  # optional, higher-quality embeddings
 
 # Text Processing & Web
 wikipedia==1.4.0
 
-# GUI
-tk==0.1.0  # only needed for tkinter GUI status
-
 # Utility
 pandas==2.2.2
-scikit-learn==1.5.0
-requests==2.31.0
-aiohttp==3.9.5
-uuid
-
-#Dev Tools
-pytest
-black
-flake8
-mypy

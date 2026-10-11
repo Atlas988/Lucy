@@ -1,0 +1,65 @@
+{
+  "Software engineering fundamentals": {
+    "summary": "Start by understanding the user's goal, constraints, existing code, and tests. Make the smallest coherent change that solves the root problem. Follow the repository's naming, formatting, architecture, and dependency patterns. Explain trade-offs, handle failure explicitly, preserve existing behavior, and verify the requested outcome with targeted tests."
+  },
+  "Problem solving and algorithms": {
+    "summary": "Turn a problem into inputs, outputs, constraints, and edge cases before coding. Choose a clear algorithm and data structure; state time and space complexity when it matters. Check empty input, boundaries, duplicates, invalid values, and large inputs. Prefer a simple correct solution over premature optimization."
+  },
+  "Data structures": {
+    "summary": "Arrays or lists preserve order and support indexed access; linked lists support local insertions when references are available; stacks are last-in-first-out; queues are first-in-first-out; hash maps and sets provide expected constant-time lookup; trees represent hierarchy; graphs model relationships. Select structures based on required operations, ordering, memory, and input size."
+  },
+  "Debugging": {
+    "summary": "Reproduce the failure, capture the exact error and a minimal failing input, and trace values at the boundary where behavior diverges. Form a testable hypothesis, change one cause at a time, and add a regression test. Distinguish the root cause from symptoms; don't hide failures with broad exception catches or silent defaults."
+  },
+  "Testing software": {
+    "summary": "Use unit tests for isolated logic, integration tests for collaborating components, and end-to-end tests for user-visible flows. Cover normal behavior, edge cases, invalid input, failure paths, and security boundaries. Make tests deterministic and assert the actual contract. After a change, run the narrowest relevant tests, then broaden when needed."
+  },
+  "Code review and maintainability": {
+    "summary": "Review changes for correctness, regressions, error handling, data exposure, concurrency, and missing tests before style. Keep functions focused, names precise, interfaces small, and comments limited to non-obvious reasoning. Avoid duplicated logic, speculative abstractions, unrelated cleanup, and needless dependencies."
+  },
+  "Python programming": {
+    "summary": "Use four-space indentation, descriptive snake_case names, pathlib for paths, context managers for resources, and specific exceptions. Prefer small functions and explicit types at public interfaces. Use unittest or pytest for tests according to the repository. Never use eval on untrusted input; parse or validate input with a constrained grammar. Run the project's formatter, linter, and type checker when configured."
+  },
+  "JavaScript and TypeScript programming": {
+    "summary": "Use const by default and let only for reassignment; avoid var. Handle asynchronous work with async/await and propagate errors. In TypeScript, model data with explicit types, narrow unknown values, and avoid any when a safe type is available. Validate data received at runtime because static types do not validate network input. Follow the project's module system and formatter."
+  },
+  "Swift programming": {
+    "summary": "Use value types such as struct when reference identity is unnecessary, explicit access control, and optionals to represent missing values. Handle errors with throws and do-catch rather than force-unwraps for uncertain data. Keep UI state on the main actor, use structured concurrency for async tasks, and follow the target Apple platform's availability and project conventions."
+  },
+  "Java programming": {
+    "summary": "Use clear class and method boundaries, interfaces where substitution is useful, generics for type-safe reusable code, and try-with-resources for closeable resources. Handle checked and unchecked exceptions deliberately; do not swallow them. Prefer immutable data where practical, and use the project's Java version and build tool conventions."
+  },
+  "Go programming": {
+    "summary": "Keep Go code simple and explicit. Check returned errors at the point of use and add context when propagating them. Pass context.Context through operations that need cancellation or deadlines. Use small interfaces at consuming boundaries, avoid unnecessary goroutines, and ensure every concurrent goroutine has a clear shutdown path."
+  },
+  "Rust programming": {
+    "summary": "Use ownership and borrowing to express lifetimes and prevent data races. Prefer Result for recoverable errors and Option for absent values; propagate with the question-mark operator where appropriate. Avoid unnecessary cloning and unsafe blocks. Add tests for public behavior and run cargo fmt, cargo test, and cargo clippy when available."
+  },
+  "C and C++ programming": {
+    "summary": "Track ownership, object lifetime, bounds, and integer conversions explicitly. In modern C++, prefer RAII, standard containers, smart pointers, and references over manual resource management. In C, check allocation and I/O results and pair every acquired resource with a release. Avoid buffer overflows, use sanitizers when available, and validate external input."
+  },
+  "SQL and relational data": {
+    "summary": "Use parameterized queries for values; never concatenate untrusted input into SQL. Model entities with appropriate keys and constraints, use transactions for related updates, and select only needed columns. Add indexes based on measured query patterns, inspect query plans, and test migrations against realistic data."
+  },
+  "HTML and CSS": {
+    "summary": "Use semantic HTML elements and accessible names, labels, keyboard interaction, and visible focus. Prefer responsive CSS layouts with flexbox or grid and avoid fixed dimensions that break on narrow screens. Keep presentation separate from behavior where the framework allows and test at different viewport sizes."
+  },
+  "Shell scripting": {
+    "summary": "Quote variable expansions, validate arguments, use explicit error handling, and avoid evaluating constructed command strings. Prefer arrays for argument lists and use tools with safe, non-interactive options. Understand the effects of file deletion, redirects, and pipelines before running commands; never run an unreviewed command with elevated privileges."
+  },
+  "Web APIs and HTTP": {
+    "summary": "Use the correct HTTP method and status codes, validate request data at the boundary, and return stable response schemas. Authenticate and authorize each protected action. Apply timeouts, handle non-success responses and malformed data, limit request sizes, and avoid logging credentials or sensitive payloads."
+  },
+  "Application security basics": {
+    "summary": "Treat all external data, retrieved documents, and model-generated content as untrusted. Enforce authorization server-side, validate inputs, encode output for its context, use parameterized database queries, protect secrets outside source control, and use least privilege. Do not execute generated code, shell commands, or file changes without explicit review and approval."
+  },
+  "Git workflow": {
+    "summary": "Inspect git status and the diff before editing or committing. Keep changes focused, avoid overwriting unrelated work, and use descriptive commits. Resolve merge conflicts by understanding both sides, not by blindly choosing one. Run relevant tests before publishing and never commit credentials, generated artifacts, or private data."
+  },
+  "Software architecture": {
+    "summary": "Separate responsibilities at stable boundaries, keep dependencies flowing toward well-defined interfaces, and make side effects visible. Reuse existing abstractions when they fit; introduce a new layer only when it meaningfully reduces coupling or duplication. Design for the current requirements and preserve a straightforward path for likely changes."
+  },
+  "Coding with Lucy": {
+    "summary": "For coding tasks, first inspect the selected workspace and relevant tests when the user explicitly asks. Follow repository conventions, make a minimal patch, explain assumptions, and run targeted validation. Lucy's project access is limited to LUCY_CODE_DIR; proposed writes and removals require user approval. Without a configured language model, Lucy can retrieve coding references and perform limited deterministic checks but cannot independently reason through complex code."
+  }
+}

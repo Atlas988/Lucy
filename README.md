@@ -102,6 +102,13 @@ automatically.
 - `/files [folder]` — list supported files inside Lucy's selected learning folder
 - `/learn <relative-path>` — explicitly copy one supported text file into Lucy's local learned library
 - `/learned [query]` — search/read learned excerpts; use `/forget-file <relative-path>` to remove one
+- `/feedback <correction>` — teach Lucy for this conversation; she asks before saving it for later chats
+- `/reflect` — review recent conversation turns for possible reusable lessons; Lucy asks before saving
+- `/code-files [folder]` — list source files in Lucy's coding workspace
+- `/code-read <path>` — ask Lucy to inspect a project file
+- `/code-check <python-path>` — check Python syntax without executing the file
+- `/code-delete <path>` and `/code-restore <path>` — remove to recoverable trash or restore, after approval
+- `/coding [topic]` — browse Lucy's built-in software engineering and language reference
 - `/calculate <expression>` or `=<expression>` — calculate using numbers and
   `+`, `-`, `*`, `/`, `//`, `%`, and `**`
 - `/status` — show the active mode and local data counts
@@ -110,8 +117,32 @@ automatically.
 
 Conversation history and saved facts are stored in `data/lucy_memory.json`.
 Set `LUCY_MEMORY_PATH` or `LUCY_KNOWLEDGE_PATH` to use different files.
+Use `/feedback <correction>` to teach Lucy during the current conversation.
+Lucy will ask before saving that correction as a preference for future chats;
+without approval it stays session-only and is cleared by `/clear`. When a
+language model is configured, Lucy is instructed to reconsider and correct her
+answer when you point out a mistake. Without a language model, she can retain
+the correction but cannot generate revised open-ended answers.
+With a language model configured, `/reflect` reviews recent conversation turns
+and suggests only clearly stated, reusable response preferences or corrections.
+Lucy asks separately before saving each suggestion; reflection does not run
+arbitrary tools or save suggestions when approval is unavailable. The model may
+choose relevant read-only tools to fulfill your explicit request, while code
+changes, deletion, and computer actions remain approval-gated.
 Do not put private information in `/search` queries; those queries are sent to
 Wikipedia only when you explicitly use that command.
+
+### Coding reference
+
+Lucy includes a concise built-in programming reference in
+`data/coding_reference.json`, covering software engineering fundamentals,
+debugging, tests, common data structures, Python, JavaScript/TypeScript, Swift,
+Java, Go, Rust, C/C++, SQL, web development, security, and Git. Browse it with
+`/coding` or look up a topic with `/coding Python`. Coding questions search this
+reference even without a language model, alongside any matching entries in the
+main knowledge base. The reference is practical guidance, not a complete
+language manual; generated, project-specific coding help still requires a
+configured language model and an explicitly selected workspace.
 
 ### Learning from selected files
 
@@ -129,6 +160,37 @@ files of supported types, and a 128 KB per-file limit. Symlinks, hidden files,
 common credential-named files, and non-text formats are blocked. Lucy does not
 execute or modify learned files. Learned copies are stored in
 `data/lucy_learned.json`; `/forget-file notes.md` removes Lucy's saved copy.
+
+### Coding and improving Lucy
+
+To enable project coding, point Lucy at exactly one source folder. For Lucy's
+own repository:
+
+```sh
+export LUCY_CODE_DIR="$HOME/GitHub/Lucy"
+python main.py
+```
+
+Lucy can inspect supported files and propose complete file changes in Python,
+JavaScript/TypeScript, Swift, Java, C/C++, Go, Rust, Ruby, PHP, shell, SQL,
+JSON, YAML, HTML/CSS, and other listed text formats. You will see the diff and
+must approve every write. Removed files go to `.lucy-trash` inside the selected
+workspace and can be restored with `/code-restore <path>`, also with approval.
+Avoid pointing the workspace at your whole home folder. Keep important work
+under version control and review changes before using them.
+
+For Lucy to generate changes instead of just using the direct coding commands,
+also configure a model with tool-calling support using the Ollama or GPT4All
+setup above. Coding work is only available inside `LUCY_CODE_DIR`.
+
+Lucy can check Python syntax without running the code. It does not execute
+generated code, run arbitrary terminal commands, or run test suites on its own:
+those actions could modify files, access credentials, or contact services.
+Review and test approved code yourself.
+
+Use `/feedback <correction or preference>` or `/remember <fact>` to help Lucy
+adapt future responses. These notes persist locally; this is explicit memory,
+not self-training or human-like learning.
 
 ### Public internet and computer actions
 

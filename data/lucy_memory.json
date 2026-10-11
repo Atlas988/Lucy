@@ -40,6 +40,126 @@
     {
       "role": "assistant",
       "content": "just-in-time compiler: In computing, just-in-time (JIT) compilation (also dynamic translation or run-time compilations)[1] is compilation (of computer code) during execution of a program (at run time) rather than before execution.[2] This may consist of source code translation but is more commonly bytecode translation to machine code, which is then executed directly. A system implementing a JIT compiler typically continuously analyses the code being executed and identifies parts of the code where the speedup gained from compilation or recompilation would outweigh the overhead of compiling that code.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! What would you like help with?"
+    },
+    {
+      "role": "user",
+      "content": "what can you do"
+    },
+    {
+      "role": "assistant",
+      "content": "I don't have a local model or a matching reference for that yet. Set LUCY_MODEL_PATH to a GPT4All .gguf model, use /search <topic> for Wikipedia, or ask /help for available commands."
+    },
+    {
+      "role": "user",
+      "content": "q"
+    },
+    {
+      "role": "assistant",
+      "content": "Q (number format): The Q notation is a way to specify the parameters of a binary fixed point number format. Specifically, how many bits are allocated for the integer portion, how many for the fractional portion, and whether there is a sign-bit.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "/q"
+    },
+    {
+      "role": "assistant",
+      "content": "Q (number format): The Q notation is a way to specify the parameters of a binary fixed point number format. Specifically, how many bits are allocated for the integer portion, how many for the fractional portion, and whether there is a sign-bit.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "hi"
+    },
+    {
+      "role": "assistant",
+      "content": "Hello! What would you like help with?"
+    },
+    {
+      "role": "user",
+      "content": "what time is it"
+    },
+    {
+      "role": "assistant",
+      "content": "It is 11:41 AM."
+    },
+    {
+      "role": "user",
+      "content": "what day is it"
+    },
+    {
+      "role": "assistant",
+      "content": "DAL: Dal is a term in the Indian subcontinent for dried, split pulses.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "where are you"
+    },
+    {
+      "role": "assistant",
+      "content": "SegReg: In statistics and data analysis, the application software SegReg is a free and user-friendly tool for linear segmented regression analysis to determine the breakpoint where the relation between the dependent variable and the independent variable changes abruptly.[1]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "what is ai"
+    },
+    {
+      "role": "assistant",
+      "content": "Artificial Intelligence: Artificial intelligence (AI) refers to the capability of computational systems to perform tasks typically associated with human intelligence, such as learning, reasoning, problem-solving, perception, and decision-making. It is a field of research in computer science that develops and studies methods and software that enable machines to perceive their environment and use learning and intelligence to take actions that maximize their chances of achieving defined goals.[1] Such machines may be called AIs.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "what is lucy"
+    },
+    {
+      "role": "assistant",
+      "content": "Lucene: Apache Lucene is a free and open-source search engine software library, originally written in Java by Doug Cutting. It is supported by the Apache Software Foundation and is released under the Apache Software License.  Lucene is widely used as a standard foundation for production search applications.[2][3][4]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "what is emotion"
+    },
+    {
+      "role": "assistant",
+      "content": "memoization: In computing, memoization or memoisation is an optimization technique used primarily to speed up computer programs by storing the results of expensive function calls to pure functions and returning the cached result when the same inputs occur again.  Memoization has also been used in other contexts (and for purposes other than speed gains), such as in simple mutually recursive descent parsing.[1] It is a type of caching, distinct from other forms of caching such as buffering and page replacement. In the context of some logic programming languages, memoization is also known as tabling.[2]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "what is time"
+    },
+    {
+      "role": "assistant",
+      "content": "just-in-time compiler: In computing, just-in-time (JIT) compilation (also dynamic translation or run-time compilations)[1] is compilation (of computer code) during execution of a program (at run time) rather than before execution.[2] This may consist of source code translation but is more commonly bytecode translation to machine code, which is then executed directly. A system implementing a JIT compiler typically continuously analyses the code being executed and identifies parts of the code where the speedup gained from compilation or recompilation would outweigh the overhead of compiling that code.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "what are your goals"
+    },
+    {
+      "role": "assistant",
+      "content": "Coast Guard: A coast guard or coastguard is a maritime security organization of a particular country. The term embraces wide range of responsibilities in different countries, from being a heavily armed military force with customs and security duties to being a volunteer organization tasked with search and rescue without law enforcement authority. In most countries, a typical coast guard's functions are distinct from those of the navy (a military service) and the transit police (a law enforcement agency), while in certain countries they have similarities to both.\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "name"
+    },
+    {
+      "role": "assistant",
+      "content": "Merb: Merb is a discontinued model–view–controller web framework in Ruby, notable as a precursor to Rails 3. It brought increased focus on speed and modularity to Rails 3.[4][5] The name Merb is a contraction of \"Mongrel\" and \"Erb\".[6]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
+    },
+    {
+      "role": "user",
+      "content": "open outlook"
+    },
+    {
+      "role": "assistant",
+      "content": "Open-source: Open source is source code that is made freely available for possible modification and redistribution. Products include permission to use and view the source code,[1] design documents,[2] or content of the product. The open source model is a decentralized software development model that encourages open collaboration.[3][4]\nA main principle of open source software development is peer production, with products such as source code, blueprints, and documentation freely available to the public. The open source movement in software began as a response to the limitations of proprietary code. The model is used for projects such as in open source appropriate technology,[5] and open source drug discovery.[6][7]\n\nFor a conversational answer, configure a GPT4All model with LUCY_MODEL_PATH."
     }
   ]
 }
